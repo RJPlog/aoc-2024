@@ -4,7 +4,7 @@ import kotlin.math.*
 fun hysteria(in1: Int): Int {
 	var groupOne = mutableListOf<Int>()
 	var groupTwo = mutableListOf<Int>()
-	File("day2501_puzzle_input.txt").forEachLine {
+	File("day2401_puzzle_input.txt").forEachLine {
 		var line = it.split("   ")
 		groupOne.add(line[0].toInt())
 		groupTwo.add(line[1].toInt())
