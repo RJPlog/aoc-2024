@@ -3,7 +3,7 @@ import kotlin.math.*
 
 fun safeReport(): Int {	
 	var result = 0
-	File("day2502_puzzle_input.txt").forEachLine {
+	File("day2402_puzzle_input.txt").forEachLine {
 		var line = it.split(" ").windowed(2).map() {it[1].toInt() - it[0].toInt()}
 		if (line.filter {it !in listOf(1,2,3)}.count() == 0) {
 			result += 1
