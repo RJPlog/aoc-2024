@@ -1,49 +1,60 @@
 fun fencing(gardenMap: String, w: Int): Int {
     
    val allTiles = MutableList(gardenMap.length) {it}
+   //println(allTiles.size)
    var allTilesSorted = mutableListOf(mutableListOf<Int>())
    val h = gardenMap.length / w
-   println(h)
+   //println(h)
        
    //println(allTiles)
    //println(allTilesSorted)
   
-   var i = 0 
+   var j = 0 
    while (allTiles.size > 0 ) {
-	   var nextTile = allTiles[0]
-       var xNextTile = nextTile % w
-       var yNextTile = nextTile / w
-       var plantOfNextTile = gardenMap[nextTile]
        var regionFound = false
-       
-       for (region in 0..allTilesSorted.size-1) {
-           for (tile in 0..allTilesSorted[region].size-1) {
-               var xIt = allTilesSorted[region][tile] % w
-               var yIt = allTilesSorted[region][tile] / w
-               var plantOfIt = gardenMap[allTilesSorted[region][tile]]
-               if (((xNextTile - xIt) <= 1  && (xNextTile - xIt) >= -1) && ((yNextTile - yIt) <= 1 && (yNextTile - yIt) >= -1) && plantOfNextTile == plantOfIt) {
-                   allTilesSorted[region].add(nextTile)
-                   regionFound = true
-                   break
+       var indexOfRegionFound = 0
+       for (i in 0..allTiles.size-1) {
+           var nextTile = allTiles[i]
+           var xNextTile = nextTile % w
+           var yNextTile = nextTile / w
+           var plantOfNextTile = gardenMap[nextTile]
+
+
+
+           for (region in 0..allTilesSorted.size-1) {
+               for (tile in 0..allTilesSorted[region].size-1) {
+                   var xIt = allTilesSorted[region][tile] % w
+                   var yIt = allTilesSorted[region][tile] / w
+                   var plantOfIt = gardenMap[allTilesSorted[region][tile]]
+                   if (((xNextTile - xIt) <= 1  && (xNextTile - xIt) >= -1) && ((yNextTile - yIt) <= 1 && (yNextTile - yIt) >= -1) && plantOfNextTile == plantOfIt) {
+                       allTilesSorted[region].add(nextTile)
+                       regionFound = true
+                       indexOfRegionFound = i
+                       break
+                   }
+               if (regionFound) break    
                }
-           if (regionFound) break    
            }
-       }
-       if (!regionFound) {
-           var newRegion = mutableListOf<Int>()
-           newRegion.add(nextTile)
-           allTilesSorted.add(newRegion)
-           allTiles.remove(nextTile)
-       }
-       allTiles.remove(nextTile)
+           if (regionFound) break
+       } 
        
-       println(allTiles)
-   	   println(allTilesSorted)
-       i += 1
+       //println("j: $j, $indexOfRegionFound, ${allTiles.size}")
+       if (regionFound) {
+            allTiles.remove(allTiles[indexOfRegionFound])
+       } else {
+           var newRegion = mutableListOf<Int>()
+           newRegion.add(allTiles[0])
+           allTilesSorted.add(newRegion)
+           allTiles.remove(allTiles[0])
+       }
+       
+       //println(allTiles)
+   	   //println(allTilesSorted)
+       j += 1
    }
    
-   println(allTiles)
-   println(allTilesSorted)
+   //println(allTiles)
+   //println(allTilesSorted)
    
    // calc number of fences for every tile
    var result = 0
@@ -86,7 +97,7 @@ fun fencing(gardenMap: String, w: Int): Int {
                    perimeter += 1
                }
        }
-       println("${allTilesSorted[region].size}, $perimeter")
+       //println("${allTilesSorted[region].size}, $perimeter")
        result += allTilesSorted[region].size * perimeter
    }
     
@@ -97,7 +108,18 @@ fun fencing(gardenMap: String, w: Int): Int {
 fun main() {
     println("--- Day 12: Garden Groups ---")
     
-    var puzzleInput = listOf("RRRRIICCFF",
+    var puzzleInput = listOf("AAAA",
+"BBCD",
+"BBCC",
+"EEEC")
+    
+ puzzleInput = listOf("OOOOO",
+"OXOXO",
+"OOOOO",
+"OXOXO",
+"OOOOO")   
+
+   puzzleInput = listOf("RRRRIICCFF",
 "RRRRIICCCF",
 "VVRRRCCFFF",
 "VVRCCCJFFF",
@@ -106,8 +128,9 @@ fun main() {
 "VVIIICJJEE",
 "MIIIIIJJEE",
 "MIIISIJEEE",
-"MMMISSJEEE"
-)
+"MMMISSJEEE") 
+
+
     
     val width = puzzleInput[0].length
             
