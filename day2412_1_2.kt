@@ -28,7 +28,7 @@ fun fencing(gardenMap: String, w: Int): Int {
                    var yIt = allTilesSorted[region][tile] / w
                    var plantOfIt = gardenMap[allTilesSorted[region][tile]]
                    // siehe nach unten, könnte das diagonale Felder zu einer Region zusammenfassen? -> Abfrage separieren auf u,d,l,r?
-                   if (((xNextTile - xIt) <= 1  && (xNextTile - xIt) >= -1) && ((yNextTile - yIt) <= 1 && (yNextTile - yIt) >= -1) && plantOfNextTile == plantOfIt) {
+                   if (((xNextTile - xIt) <= 1  && (xNextTile - xIt) >= -1) && ((yNextTile - yIt) <= 1 && (yNextTile - yIt) >= -1) && ((xNextTile -xIt) == 0 || (yNextTile - yIt) == 0 ) && plantOfNextTile == plantOfIt) {
                        allTilesSorted[region].add(nextTile)
                        allTSLetter[region].add(gardenMap[nextTile])
                        regionFound = true
