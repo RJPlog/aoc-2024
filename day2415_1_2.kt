@@ -1,4 +1,4 @@
-fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: Int): Int {
+fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: Int): Long {
 	var warehouse = puzzleInput1
     puzzleInput2.forEach {
         var x = warehouse.indexOf('@') % w
@@ -70,7 +70,19 @@ fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: I
             println(it)
         }
         println()
-    return -1
+        
+    var result = 0L    
+    for (y in 0..h-1) {
+        for (x in 0..w-1) {
+             if (warehouse[x +  w*y] == 'O') {
+                result += ( x + 100 * y).toLong()
+
+            }           
+        }
+    }
+
+     
+    return result
 }
 
 fun main() {
