@@ -5,6 +5,8 @@ fun redoubt(puzzleInput: String, w: Int, h: Int, n: Int, part: Int): Int {
     var q4 = 0
     
     // part 2 
+    var robotsX = mutableListOf<Int>()
+    var robotsY = mutableListOf<Int>()
     var robots = mutableListOf<Int>()
     
     puzzleInput.split(";").forEach{
@@ -14,39 +16,63 @@ fun redoubt(puzzleInput: String, w: Int, h: Int, n: Int, part: Int): Int {
         val vx = instruction[1].substringAfter("=").toString().toInt()
         val vy = instruction[2].toString().toInt().toString().toInt()
         
-        //print("$px, $py, $vx, $vy")
-       
-        
-        
-       
         var p100x = (px + vx * n) % w
         if (p100x < 0) p100x = w+p100x
         var p100y = (py + vy * n) % h
         if (p100y < 0) p100y = h+p100y
         
-        if (part == 2) robots.add(p100x + w*p100y)
-        
-        //println("   -> $p100x, $p100y")
-         
+  //      if (part == 2) {
+            robotsX.add(p100x)
+            robotsY.add(p100y)
+            robots.add(p100x + w*p100y)
+   //     }
+                 
         if (p100x < w/2 && p100y < h/2) q1 += 1
         if (p100x > w/2 && p100y < h/2) q2 += 1
         if (p100x < w/2 && p100y > h/2) q3 += 1
         if (p100x > w/2 && p100y > h/2) q4 += 1
     }
     
-    if (part == 2) {
-        for (y in 0..h-1) {
-            for (x in 0..w-1) {
-                if (robots.contains(x + w*y)) {
-                    print("#")
-                } else {
-                    print(".")
-                }
-            }
-            println()
-        }
-	}	
+	
+
+    var countsX = mutableListOf<Int>()
+    for (i in 0..w-1) {
+        countsX.add(robotsX.count{it == i})
+	}
+    var countsY = mutableListOf<Int>()
+    for (i in 0..w-1) {
+        countsY.add(robotsY.count{it == i})
+    }
+    var trefferX = false
+    countsX.windowed(25).forEach{
+		if( it.sum() > 200) trefferX = true
+	}
+	var trefferY = false
+    countsY.windowed(25).forEach{
+		if( it.sum() > 200) trefferY = true
+	}
     
+    if (trefferX && trefferY && part == 2) {
+		println("after $n seconds:")
+        if (part == 2) {
+            for (y in 0..h-1) {
+                for (x in 0..w-1) {
+                    if (robots.contains(x + w*y)) {
+                        print("#")
+                    } else {
+                        print(".")
+                    }
+                }
+                println()
+            }
+        }
+		return 1	
+    }
+    
+	if (part == 2) {
+		return -1
+	}
+	
     return q1*q2*q3*q4
 }
 
@@ -66,18 +92,26 @@ fun main() {
 "p=7,3 v=-1,2",
 "p=2,4 v=2,-3",
 "p=9,5 v=-3,-3")
+
+    // insert your puzzle data here:
+    //puzzleInput = listOf(....)
+    //
+    if (puzzleInput.size < 100) println("you missed to insert your puzzleData in")
     
-    
-    val width = 11  //  11  - 101
-    val height = 7    //  7  - 103 
+    val width = 101
+    val height = 103
         
     var solution1 = redoubt(puzzleInput.joinToString(";"), width, height, 100, 1)
-    var solution2 = 0
+    var solution2 = 0L
 
     println("  part1: the safety factor after exactly 100 seconds is $solution1")
+	var i = 1
+    while (true) {
+        var solution2 = redoubt(puzzleInput.joinToString(";"), width, height, i, 2)
+		if (solution2 == 1) {break}
+		i += 1
+		if(i % 1000 == 0) println(i)
+    }
     
-  //for (i in 0..1000) {
-  //      var solution2 = redoubt(puzzleInput.joinToString(";"), width, height, i, 2)
-  //  }
-    //println("  part2: the fewest tokens you would have to spend is $solution2")
+    println("  part2: the fewest tokens you would have to spend is $i")
 }
