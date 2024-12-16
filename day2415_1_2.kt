@@ -1,123 +1,114 @@
-fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: Int): Long {
-	var warehouse = puzzleInput1
-    puzzleInput2.forEach {
-        var x = warehouse.indexOf('@') % w
-        var y = warehouse.indexOf('@') / w
+fun maze(puzzleInput: String, w: Int, h: Int, part: Int): Int {
+      
+    // initialize all necessary variables for Dijkstra
+    var Q = mutableMapOf<Int,List<Int>>()  // id -> dist, previous, direction (N = 0, E = 1, S = 2, W = 3)
+    var allNodes = mutableMapOf<Int,List<Int>>()
+    var startIndex = puzzleInput.indexOf("S")
+    for (i in 0..puzzleInput.length-1) {
+        if (puzzleInput[i] != '#') {
+            var node = listOf(w*h*1000, 0, 10 )
+            Q.put(i, node)
+        }
+    }
+    Q.put(startIndex, listOf(0,0,1))
+    
+    var j = 0
+    while (Q.size > 0) {
+        // take node with shortest distance
+        var idU = 0
+        var distU = w*h*1000
+        var dirU = 10
+        for ((key, value) in Q) {
+            if (value[0] < distU) {
+                idU = key
+                distU = value[0]
+                dirU = value[2]
+            }
+        }
+        allNodes.put(idU, listOf(distU,idU,dirU))
+        Q.remove(idU)
         
-        when (it) {     			
-            '^' -> {
-                if (warehouse[(x)+ w*(y-1)] == '.') {
-                    warehouse = warehouse.replaceRange((x)+ w*(y), (x)+ w*(y)+1, ".")
-                    warehouse = warehouse.replaceRange((x)+ w*(y-1), (x)+ w*(y-1)+1, "@")
-                } else if (warehouse[(x)+ w*(y-1)] == 'O') {
-                    val pR = "\\.(.{" + (w-1).toString() + "}O)+.{" + (w-1).toString() + "}@"
-    				val pD = pR.toRegex()  //"""\.(.{7}O)+.{7}@""".toRegex()
-                    val matchD = pD.find(warehouse)
-                    if (matchD != null) {
-                    	warehouse = warehouse.replaceRange(x + w*y, x + w*y + 1, ".")
-                        warehouse = warehouse.replaceRange(x + w*(y-1), x + w*(y-1) + 1, "@")
-                        warehouse = warehouse.replaceRange(x + w*y - (matchD!!.value.length-1), x + w*y - (matchD!!.value.length-1) + 1, "O")
-                    }
-                }
-                //println("up")
+        // for each neigbour of U
+        var xU = idU % w
+        var yU = idU / w
+        if (Q.containsKey((xU) + w * (yU-1))) {
+            var distance = distU
+            if (dirU == 0) {
+                distance += 1
+            } else if (dirU == 1 || dirU == 3) {
+                distance += 1001
+            } else if (dirU == 2) {
+                distance += 2001
             }
-            '>' -> {
-                if (warehouse[(x+1)+ w*(y)] == '.') {
-                    warehouse = warehouse.replaceRange((x)+ w*(y), (x)+ w*(y)+1, ".")
-                    warehouse = warehouse.replaceRange((x+1)+ w*(y), (x+1)+ w*(y)+1, "@")
-                } else if (warehouse[(x+1)+ w*(y)] == 'O') {
-                    val pR = """@O+\.""".toRegex()
-                    val match = pR.find(warehouse)
-                    if (match != null) {
-                    	warehouse = warehouse.replace(match!!.value, "." + match!!.value.dropLast(1))
-                    }
-                }
-                //println("right")
-                }
-            'v' -> {
-                if (warehouse[(x)+ w*(y+1)] == '.') {
-                    warehouse = warehouse.replaceRange((x)+ w*(y), (x)+ w*(y)+1, ".")
-                    warehouse = warehouse.replaceRange((x)+ w*(y+1), (x)+ w*(y+1)+1, "@")
-                } else if (warehouse[(x)+ w*(y+1)] == 'O') {
-                    val pR = "@(.{" + (w-1).toString() + "}O)+.{" + (w-1).toString() + "}\\."
-    				val pD = pR.toRegex()  //"""@(.{7}O)+.{7}\.""".toRegex()
-                    val matchD = pD.find(warehouse)
-                    if (matchD != null) {
-                    	warehouse = warehouse.replaceRange(x + w*y, x + w*y + 1, ".")
-                        warehouse = warehouse.replaceRange(x + w*(y+1), x + w*(y+1) + 1, "@")
-                        warehouse = warehouse.replaceRange(x + w*y + matchD!!.value.length-1, x + w*y + matchD!!.value.length-1 + 1, "O")
-                    }
-                }
-                //println("down")
-                }
-            '<' -> {
-                //println("left")
-                if (warehouse[(x-1)+ w*(y)] == '.') {
-                    warehouse = warehouse.replaceRange((x)+ w*(y), (x)+ w*(y)+1, ".")
-                    warehouse = warehouse.replaceRange((x-1)+ w*(y), (x-1)+ w*(y)+1, "@")
-                } else if (warehouse[(x-1)+ w*(y)] == 'O') {
-                    val pR = """\.O+@""".toRegex()
-                    val match = pR.find(warehouse)
-                    if (match != null) {
-                    	warehouse = warehouse.replace(match!!.value, match!!.value.drop(1) + ".")
-                    }
-                }
-            }
+            if (distance < Q.getValue((xU) + w * (yU-1))[0]) Q.put((xU) + w * (yU-1), listOf(distance, idU, 0))
         } 
-
-    }
-    warehouse.chunked(w).forEach{
-            println(it)
+        if (Q.containsKey((xU+1) + w * (yU))) {
+            var distance = distU
+            if (dirU == 1) {
+                distance += 1
+            } else if (dirU == 0 || dirU == 2) {
+                distance += 1001
+            } else if (dirU == 3) {
+                distance += 2001
+            }
+            if (distance < Q.getValue((xU+1) + w * (yU))[0]) Q.put((xU+1) + w * (yU), listOf(distance, idU, 1))
         }
-        println()
-        
-    var result = 0L    
-    for (y in 0..h-1) {
-        for (x in 0..w-1) {
-             if (warehouse[x +  w*y] == 'O') {
-                result += ( x + 100 * y).toLong()
-
-            }           
+        if (Q.containsKey((xU) + w * (yU+1))) {
+            var distance = distU
+            if (dirU == 2) {
+                distance += 1
+            } else if (dirU == 1 || dirU == 3) {
+                distance += 1001
+            } else if (dirU == 0) {
+                distance += 2001
+            }
+            if (distance < Q.getValue((xU) + w * (yU+1))[0]) Q.put((xU) + w * (yU+1), listOf(distance, idU, 2))
         }
+        if (Q.containsKey((xU-1) + w * (yU))) {
+            var distance = distU
+            if (dirU == 3) {
+                distance += 1
+            } else if (dirU == 0 || dirU == 2) {
+                distance += 1001
+            } else if (dirU == 1) {
+                distance += 2001
+            }
+            if (distance < Q.getValue((xU-1) + w * (yU))[0]) Q.put((xU-1) + w * (yU), listOf(distance, idU, 3))
+        }
+         
+        j += 1
     }
-
-     
-    return result
+    
+    var endIndex = puzzleInput.indexOf("E")
+    
+    return allNodes.getValue(endIndex)[0]
 }
+
 
 fun main() {
    
-    println("--- Day 15: Warehouse Woes ---")
+    println("--- Day 16: Reindeer Maze ---")
     
-    var puzzleInput1 = listOf("##########",
-"#..O..O.O#",
-"#......O.#",
-"#.OO..O.O#",
-"#..O@..O.#",
-"#O#..O...#",
-"#O..O..O.#",
-"#.OO.O.OO#",
-"#....O...#",
-"##########")
+    var puzzleInput = listOf("###############",
+"#.......#....E#",
+"#.#.###.#.###.#",
+"#.....#.#...#.#",
+"#.###.#####.#.#",
+"#.#.#.......#.#",
+"#.#.#####.###.#",
+"#...........#.#",
+"###.#.#####.#.#",
+"#...#.....#.#.#",
+"#.#.#.###.#.#.#",
+"#.....#...#.#.#",
+"#.###.#.#.#.#.#",
+"#S..#.....#...#",
+"###############")
     
-    var puzzleInput2 = listOf("<vv>^<v^>v>^vv^v>v<>v^v<v<^vv<<<^><<><>>v<vvv<>^v^>^<<<><<v<<<v^vv^v>^",
-"vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v",
-"><>vv>v^v^<>><>>>><^^>vv>v<^^^>>v^v^<^^>v^^>v^<^v>v<>>v^v^<v>v^^<^^vv<",
-"<<v<^>>^^^^>>>v^<>vvv^><v<<<>^^^vv^<vvv>^>v<^^^^v<>^>vvvv><>>v^<<^^^^^",
-"^><^><>>><>^^<<^^v>>><^<v>^<vv>>v>>>^v><>^v><<<<v>>v<v<v>vvv>^<><<>^><",
-"^>><>^v<><^vvv<^^<><v<<<<<><^v<<<><<<^^<v<^^^><^>>^<v^><<<^>>^v<v^v<v^",
-">^>>^v>vv>^<<^v<>><<><<v<<v><>v<^vv<<<>^^v^>^^>>><<^v>>v^v><^^>>^<>vv^",
-"<><^^>^^^<><vvvvv^v<v<<>^v<v>v<<^><<><<><<<^^<<<^<<>><<><^^^>^^<>^>v<>",
-"^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>",
-"v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^")
+    var width = puzzleInput[0].length
+    var height = puzzleInput.size
     
-    var width = puzzleInput1[0].length
-    var height = puzzleInput1.size
-    
- 
-    var solution1 = warehouse(puzzleInput1.joinToString(""), puzzleInput2.joinToString(""), width, height, 1)
+    var solution1 = maze(puzzleInput.joinToString(""), width, height, 1)
 
-    println("  part1: the sum of all boxes' GPS coordinates is $solution1")
-
-    //println("  part2: ")
+    println("  part1: the lowest score a Reindeer could possibly get is $solution1")
 }
