@@ -40,7 +40,7 @@ fun maze(puzzleInput: String, w: Int, h: Int, part: Int): Int {
             } else if (dirU == 2) {
                 distance += 2001
             }
-            Q.put((xU) + w * (yU-1), listOf(distance, idU, 0))
+            if (distance < Q.getValue((xU) + w * (yU-1))[0]) Q.put((xU) + w * (yU-1), listOf(distance, idU, 0))
         } 
         if (Q.containsKey((xU+1) + w * (yU))) {
             var distance = distU
@@ -51,7 +51,7 @@ fun maze(puzzleInput: String, w: Int, h: Int, part: Int): Int {
             } else if (dirU == 3) {
                 distance += 2001
             }
-            Q.put((xU+1) + w * (yU), listOf(distance, idU, 1))
+            if (distance < Q.getValue((xU+1) + w * (yU))[0]) Q.put((xU+1) + w * (yU), listOf(distance, idU, 1))
         }
         if (Q.containsKey((xU) + w * (yU+1))) {
             var distance = distU
@@ -62,7 +62,7 @@ fun maze(puzzleInput: String, w: Int, h: Int, part: Int): Int {
             } else if (dirU == 0) {
                 distance += 2001
             }
-            Q.put((xU) + w * (yU+1), listOf(distance, idU, 2))
+            if (distance < Q.getValue((xU) + w * (yU+1))[0]) Q.put((xU) + w * (yU+1), listOf(distance, idU, 2))
         }
         if (Q.containsKey((xU-1) + w * (yU))) {
             var distance = distU
@@ -73,7 +73,7 @@ fun maze(puzzleInput: String, w: Int, h: Int, part: Int): Int {
             } else if (dirU == 1) {
                 distance += 2001
             }
-            Q.put((xU-1) + w * (yU), listOf(distance, idU, 3))
+            if (distance < Q.getValue((xU-1) + w * (yU))[0]) Q.put((xU-1) + w * (yU), listOf(distance, idU, 3))
         }
          
         j += 1
@@ -104,26 +104,7 @@ fun main() {
 "#.###.#.#.#.#.#",
 "#S..#.....#...#",
 "###############")
-    
-    
- puzzleInput = listOf("#################",
-"#...#...#...#..E#",
-"#.#.#.#.#.#.#.#.#",
-"#.#.#.#...#...#.#",
-"#.#.#.#.###.#.#.#",
-"#...#.#.#.....#.#",
-"#.#.#.#.#.#####.#",
-"#.#...#.#.#.....#",
-"#.#.#####.#.###.#",
-"#.#.#.......#...#",
-"#.#.###.#####.###",
-"#.#.#...#.....#.#",
-"#.#.#.#####.###.#",
-"#.#.#.........#.#",
-"#.#.#.#########.#",
-"#S#.............#",
-"#################")   
-    
+     
     var width = puzzleInput[0].length
     var height = puzzleInput.size
     
