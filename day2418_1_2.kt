@@ -1,9 +1,12 @@
+import java.io.File
+
 fun ramRun(puzzleInput: String, w: Int, h: Int, part: Int): Int {
     
     // initialize all necessary variables for Dijkstra
     var Q = mutableMapOf<Int,List<Int>>()  // id -> dist, previous
     var allNodes = mutableMapOf<Int,List<Int>>()
     var startIndex = puzzleInput.indexOf("S")
+    var endIndex = puzzleInput.indexOf("E")
     for (i in 0..puzzleInput.length-1) {
         if (puzzleInput[i] != '#') {
             var node = listOf(w*h*1000, 0)
@@ -16,7 +19,7 @@ fun ramRun(puzzleInput: String, w: Int, h: Int, part: Int): Int {
    // println(allNodes)
     
     var j = 0
-    while (Q.size > 0) {
+    while (Q.size > 0 && !allNodes.containsKey(endIndex)) {
         // take node with shortest distance
         var idU = 0
         var distU = w*h*1000
@@ -52,14 +55,13 @@ fun ramRun(puzzleInput: String, w: Int, h: Int, part: Int): Int {
                 distance += 1
             if (distance < Q.getValue((xU-1) + w * (yU))[0]) Q.put((xU-1) + w * (yU), listOf(distance, idU))
         }
-  //      println()
- //   println(Q)
- //   println(allNodes) 
+   //     println()
+    //println(Q)
+    //println(allNodes) 
         j += 1
     }
-    
-    var endIndex = puzzleInput.indexOf("E")
-    
+ 
+    //println(j)
     return allNodes.getValue(endIndex)[0]
 }
 
@@ -68,21 +70,16 @@ fun main() {
    
     println("--- Day 18: RAM Run ---")
     
-    var puzzleInput = listOf("5,4",
-"4,2",
-"4,5",
-"3,0",
-"2,1",
-"6,3",
-"2,4",
-"1,5",
-"0,6",
-"3,3",
-"2,6",
-"5,1")
+    var puzzleInput = mutableListOf<String>()
+
+File("day2418_puzzle_input.txt").forEachLine {
+    if (puzzleInput.size < 1024) puzzleInput.add(it)
+}
+
+
      
-    var w = 6 // 70
-    var h = 6  // 70
+    var w = 70 // 6 - 70
+    var h = 70  // 6 - 70
     
     var ramSpace = ""
     
@@ -119,20 +116,7 @@ fun main() {
         }
         println()
     }
-    
-    for (y in 1..h+1) {
-        for (x in 1..w+1) {
-            if ( ramSpace[(x) + (w+3)*(y-1)] == '#' && ramSpace[(x+1) + (w+3)*(y)] == '#' && ramSpace[(x) + (w+3)*(y+1)] == '#' && ramSpace[(x-1) + (w+3)*(y)] == '#' ) {
-                ramSpace = ramSpace.replaceRange((x) + (w+3)*(y), (x) + (w+3)*(y)+1, "#")
-            }
-        }
-    }
-        ramSpace.chunked(w+2+1) {
-        println(it)
-    }
-    
-    
-    
+       
     var solution1 = ramRun(ramSpace, w+2+1, h+2+1, 1)
 
     println("  part1: the lowest score a Reindeer could possibly get is $solution1")
