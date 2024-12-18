@@ -76,14 +76,14 @@ fun main() {
 
     var events = 0
 File("day2418_puzzle_input.txt").forEachLine {
-    if (puzzleInput.size < 12) puzzleInput.add(it)
+    if (puzzleInput.size < 1024) puzzleInput.add(it)
     events += 1
 }
 
 
      
-    var w = 6 // 6 - 70
-    var h = 6  // 6 - 70
+    var w = 70 // 6 - 70
+    var h = 70  // 6 - 70
     
     var ramSpace = ""
     
@@ -132,7 +132,7 @@ File("day2418_puzzle_input.txt").forEachLine {
 
     var solution2 = ""
 
-    for (i in 1..events) {
+    for (i in 1025..events) {
         puzzleInput.clear()
 
         File("day2418_puzzle_input.txt").forEachLine {
