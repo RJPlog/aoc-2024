@@ -15,7 +15,7 @@ fun LinLay(pattern: String, layout: String, count: Int = 0): Int {
                     layPossible += 1 
                 } 
             } else {
-                if (layPossible < 1) {
+                if (true) {  // hier könnte mein Eintragen (layPossible < 1), dann würde man nach dem ersten Teffer abbreichen (part1 with original data)
                 //println("$insert    else : ${layout.take(currPat.length)} vs $currPat")
                 if (layout.take(currPat.length) == currPat) {
                   //println( "$insert     next level: ${layout.drop(currPat.length)}")
@@ -26,9 +26,6 @@ fun LinLay(pattern: String, layout: String, count: Int = 0): Int {
                 }
             }
         }
-
-
-
 
     return layPossible
 }
@@ -50,7 +47,8 @@ fun main() {
 
     println("--- Day 19: Linen Layout ---")
     
-    var solution1 = 0 
+    var solution1 = 0
+    var solution2 = 0 
     
 
     patterns2Create.forEach {
@@ -65,18 +63,23 @@ fun main() {
             }
         }
         reducedAvPat = reduceList.joinToString(", ")
-        println(reducedAvPat)
+        println(reduceList.size)
 
-        println("$pat2Crea -> ${LinLay(reducedAvPat, pat2Crea)}")
-        if (LinLay(reducedAvPat, pat2Crea, 0) >= 1) solution1 += 1
+
+        
+        val singleResult = LinLay(reducedAvPat, pat2Crea, 0)
+        println("$pat2Crea -> $singleResult}")
+        if (singleResult >= 1) solution1 += 1
+        solution2 += singleResult
     }
 
 
     println("  part1: $solution1 designs are possible") 
     
     
-    //println("  part2:  i")
+    println("  part2:  you get $solution2 if you add up the number of different ways")
     
     t1 = System.currentTimeMillis() - t1
 	println("puzzle solved in ${t1} ms")
 }
+
