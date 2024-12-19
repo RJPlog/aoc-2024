@@ -1,176 +1,119 @@
-import java.io.File
-
-fun ramRun(puzzleInput: String, w: Int, h: Int, part: Int): Int {
+fun compute(code: List<Long>, A: Long, B: Long, C: Long): String {
+    var output = mutableListOf<Long>()
     
-    // initialize all necessary variables for Dijkstra
-    var Q = mutableMapOf<Int,List<Int>>()  // id -> dist, previous
-    var allNodes = mutableMapOf<Int,List<Int>>()
-    var startIndex = puzzleInput.indexOf("S")
-    var endIndex = puzzleInput.indexOf("E")
-    for (i in 0..puzzleInput.length-1) {
-        if (puzzleInput[i] != '#') {
-            var node = listOf(w*h*1000, 0)
-            Q.put(i, node)
+    var A = A
+    var B = B
+    var C = C
+    
+    var inst = 0
+    
+    //println("INI A: $A, B: $B, C: $C, inst: $inst")
+    
+    var i = 0L
+    while (inst < code.size) {
+ 
+        var opcode = code[inst]
+        var operand = code[inst+1]
+        var comboOp = when (operand) {
+            0L -> 0L
+            1L -> 1L
+            1L -> 2L
+            3L -> 3L
+            4L -> A
+            5L -> B
+            6L -> C
+            else -> -1L
         }
-    }
-    Q.put(startIndex, listOf(0,0))
-    
-   // println(Q)
-   // println(allNodes)
-    
-    var j = 0
-    while (Q.size > 0 && !allNodes.containsKey(endIndex)) {
-        // take node with shortest distance
-        var idU = 0
-        var distU = w*h*1000
-        for ((key, value) in Q) {
-            if (value[0] < distU) {
-                idU = key
-                distU = value[0]
+        //println("$i: do $opcode with op $operand or combo $comboOp")
+        when (opcode) {
+            0L -> { //adv
+                var divisor = 1
+                for (i in 1..comboOp) {
+                    divisor *= 2
+                }
+                A = (A / divisor)
+                inst += 2
+            }
+            1L -> { //bxl
+                 B = B.xor(operand)
+                 inst += 2
+            }
+            2L -> { //bst
+                B = comboOp % 8
+                inst += 2
+            }
+            3L -> { //jnz
+            	if (A != 0L) {
+                    inst = operand.toInt()
+                } else {
+                    inst +=2
+                }
+            }
+            4L -> { //bxc
+            	B = B.xor(C)
+                inst += 2
+            }
+            5L -> { //out
+                output.add(comboOp % 8)
+                if (code.take(output.size) != output) return "-1L"
+                inst += 2
+            }
+            6L -> { // bdv
+                var divisor = 1
+                for (i in 1..comboOp) {
+                    divisor *= 2
+                }
+                B = (A / divisor)
+                inst += 2  
+            }
+            7L -> { // cdv
+                var divisor = 1
+                for (i in 1..comboOp) {
+                    divisor *= 2
+                }
+                C = (A / divisor)
+                inst += 2  
             }
         }
-        allNodes.put(idU, listOf(distU,idU))
-        Q.remove(idU)
-        
-        // for each neigbour of U
-        var xU = idU % w
-        var yU = idU / w
-        if (Q.containsKey((xU) + w * (yU-1))) {
-            var distance = distU
-                distance += 1
-            if (distance < Q.getValue((xU) + w * (yU-1))[0]) Q.put((xU) + w * (yU-1), listOf(distance, idU))
-        } 
-        if (Q.containsKey((xU+1) + w * (yU))) {
-            var distance = distU
-                distance += 1
-            if (distance < Q.getValue((xU+1) + w * (yU))[0]) Q.put((xU+1) + w * (yU), listOf(distance, idU))
-        }
-        if (Q.containsKey((xU) + w * (yU+1))) {
-            var distance = distU
-                distance += 1
-            if (distance < Q.getValue((xU) + w * (yU+1))[0]) Q.put((xU) + w * (yU+1), listOf(distance, idU))
-        }
-        if (Q.containsKey((xU-1) + w * (yU))) {
-            var distance = distU
-                distance += 1
-            if (distance < Q.getValue((xU-1) + w * (yU))[0]) Q.put((xU-1) + w * (yU), listOf(distance, idU))
-        }
-   //     println()
-    //println(Q)
-    //println(allNodes) 
-        j += 1
-        if (j > 71*71) return -1
+        //println("    A: $A, B: $B, C: $C, inst: $inst")
+    i += 1  
     }
- 
-    //println(j)
-    return allNodes.getValue(endIndex)[0]
+    
+    return output.joinToString(",")
 }
 
 
 fun main() {
     var t1 = System.currentTimeMillis()
-   
-    println("--- Day 18: RAM Run ---")
+
+    println("--- Day 17: Chronospatial Computer ---")
     
-    var puzzleInput = mutableListOf<String>()
-
-    var events = 0
-File("day2418_puzzle_input.txt").forEachLine {
-    if (puzzleInput.size < 1024) puzzleInput.add(it)
-    events += 1
-}
-
-
-     
-    var w = 70 // 6 - 70
-    var h = 70  // 6 - 70
+    var A = 2024L
+    var B = 0L
+    var C = 0L
     
-    var ramSpace = ""
-    
-    for (y in 0..h+2) {
-        for (x in 0..w+2) {
-         	if (x == 0 || x == w+2 || y == 0 || y == h+2) {
-                ramSpace +="#"
-            } else if (x == 1 && y == 1) {
-                ramSpace += "S"
-            } else if (x == w+1 && y == h+1) {
-                ramSpace += "E"
-             } else{
-                var coord = (x-1).toString() + "," + (y-1).toString()
-                if (puzzleInput.contains(coord)) {
-                    ramSpace += "#"
-                } else {
-                  ramSpace +="."                  
-                }
+    var puzzleInput = listOf(0,3,5,4,3,0)
 
-            }   
-        }
+    var code = mutableListOf<Long>()
+    puzzleInput.forEach {
+        code.add(it.toLong())
+    }
+    
+    
+    var solution1 = compute(code, A,B,C)
+
+    println("  part1: you get $solution1") 
+    
+    var i = 0L
+    val codeString = code.joinToString(",")
+
+    while (compute(code, i, 0, 0) != codeString) {
+        //if (i % 1000L == 0L) println(i)
+        i += 1
     }
 
-    ramSpace.chunked(w+2+1) {
-        println(it)
-    }
-    println()
-    if (false) {
-        for (y in 0..h+2) {
-            for (x in 0..w+2) {
-                print(ramSpace[x + (w+3)*y])   
-            }
-            println()
-        }
-        println()
-    }
-   
-   
+    println("  part2:  the lowest positive initial value that causes the program to output a copy of itself is: $i")
     
-    var solution1 = ramRun(ramSpace, w+2+1, h+2+1, 1)
-
-    println("  part1: the lowest score a Reindeer could possibly get is $solution1")
-
-
-    // part 2
-
-    var solution2 = ""
-
-    for (i in 1025..events) {
-        puzzleInput.clear()
-
-        File("day2418_puzzle_input.txt").forEachLine {
-            if (puzzleInput.size < i) puzzleInput.add(it)
-        }
-
-        ramSpace = ""
-        
-        for (y in 0..h+2) {
-            for (x in 0..w+2) {
-                if (x == 0 || x == w+2 || y == 0 || y == h+2) {
-                    ramSpace +="#"
-                } else if (x == 1 && y == 1) {
-                    ramSpace += "S"
-                } else if (x == w+1 && y == h+1) {
-                    ramSpace += "E"
-                } else{
-                    var coord = (x-1).toString() + "," + (y-1).toString()
-                    if (puzzleInput.contains(coord)) {
-                        ramSpace += "#"
-                    } else {
-                    ramSpace +="."                  
-                    }
-
-                }   
-            }
-        }
-
-        println("$i -> ${puzzleInput[i-1]} -> ${ramRun(ramSpace, w+2+1, h+2+1, 1)}")
-        println()
-        if (ramRun(ramSpace, w+2+1, h+2+1, 1) == -1 ) {
-            solution2 = puzzleInput[puzzleInput.size-1]
-            println("   part2: $solution2 is the coordinates of the first byte that will prevent the exit from being reachable")
-            break
-        }
-
-    }   
-
     t1 = System.currentTimeMillis() - t1
 	println("puzzle solved in ${t1} ms")
 }
