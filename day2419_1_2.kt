@@ -1,33 +1,33 @@
 import java.io.File
 
-fun LinLay(pattern: String, layout: String, count: Int = 0): Int {
+fun LinLay(pattern: String, layout: String, alreadyEval: Map<String, Long>): Long {
 
     if (pattern.length == 0) return 0
     
-    var insert = " ".repeat(count)
-
-    var layPossible = 0
+    var layPossible = 0L
 
     var searchPatterns = pattern.split(", ")
         pattern.split(", ").forEach {
             var currPat = it
-            //println("$insert run with $currPat, $layout,  ${currPat.length}, ${layout.length}")
             if (currPat.length >= layout.length) {
                 if (currPat == layout) {
-                    layPossible += 1 
+                    layPossible += 1L 
                 } 
             } else {
                 
-                //println("$insert    else : ${layout.take(currPat.length)} vs $currPat")
                 if (layout.take(currPat.length) == currPat) {
+
+                    // again reduce pattern to patterns which can be found in pattern to search
                     var newLay = layout.drop(currPat.length)
                     val reducedAvPat = (pattern.split(", ").filter {newLay.contains(it)}).joinToString(", ")
-                    //println( "$insert     next level: ${reducedAvPat.length}")
-                    layPossible += LinLay(reducedAvPat, newLay, count+4)
+                    if (alreadyEval.containsKey(newLay)) {
+                        layPossible += alreadyEval.getValue(newLay)
+                    } else {
+                        layPossible += LinLay(reducedAvPat, newLay, alreadyEval)
+                    }
                 } else {
-                    layPossible += 0
-                }
-                
+                    layPossible += 0L
+                }  
             }
         }
 
@@ -51,33 +51,33 @@ fun main() {
 
     println("--- Day 19: Linen Layout ---")
     
-    var solution1 = 0
-    var solution2 = 0 
+    var solution1 = 0L
+    var solution2 = 0L 
     
 
     patterns2Create.forEach {
         var patCrea = it
-        var countMap = mutableMapOf<String, Int>()
+        var alreadyEval = mutableMapOf<String, Long>()
 
+        // idea: create a map containing all substings (beginning from end) to make programm faster
         for (i in patCrea.length-2 downTo 0) {
-        // reduce availablePatters
-        var pat2Crea = patCrea.drop(i)
-        var reducedAvPat = ""
-        var reduceList = mutableListOf<String>()
 
-        availablePatterns.split(", ").forEach {
-            if (pat2Crea.contains(it)) {
-                reduceList.add(it)
+            // reduce availablePatters to make programm faster
+            var pat2Crea = patCrea.drop(i)
+            var reducedAvPat = ""
+            var reduceList = mutableListOf<String>()
+
+            availablePatterns.split(", ").forEach {
+                if (pat2Crea.contains(it)) {
+                    reduceList.add(it)
+                }
             }
-        }
-        reducedAvPat = reduceList.joinToString(", ")
+            reducedAvPat = reduceList.joinToString(", ")
 
-        //println("start for $reducedAvPat, $pat2Crea")
-        countMap.put(pat2Crea, LinLay(reducedAvPat, pat2Crea, 0))
-        println(countMap)
+            alreadyEval.put(pat2Crea, LinLay(reducedAvPat, pat2Crea, alreadyEval))
         }
 
-        val singleResult = countMap.getValue(patCrea)
+        val singleResult = alreadyEval.getValue(patCrea)
         println("$patCrea -> $singleResult")
         if (singleResult >= 1) solution1 += 1
         solution2 += singleResult
