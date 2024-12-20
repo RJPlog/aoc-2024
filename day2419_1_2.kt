@@ -1,6 +1,8 @@
 import java.io.File
 
 fun LinLay(pattern: String, layout: String, count: Int = 0): Int {
+
+    if (pattern.length == 0) return 0
     
     var insert = " ".repeat(count)
 
@@ -54,8 +56,12 @@ fun main() {
     
 
     patterns2Create.forEach {
+        var patCrea = it
+        var countMap = mutableMapOf<String, Int>()
+
+        for (i in patCrea.length-2 downTo 0) {
         // reduce availablePatters
-        var pat2Crea = it
+        var pat2Crea = patCrea.drop(i)
         var reducedAvPat = ""
         var reduceList = mutableListOf<String>()
 
@@ -66,8 +72,13 @@ fun main() {
         }
         reducedAvPat = reduceList.joinToString(", ")
 
-        val singleResult = LinLay(reducedAvPat, pat2Crea, 0)
-        println("$pat2Crea -> $singleResult")
+        //println("start for $reducedAvPat, $pat2Crea")
+        countMap.put(pat2Crea, LinLay(reducedAvPat, pat2Crea, 0))
+        println(countMap)
+        }
+
+        val singleResult = countMap.getValue(patCrea)
+        println("$patCrea -> $singleResult")
         if (singleResult >= 1) solution1 += 1
         solution2 += singleResult
     }
