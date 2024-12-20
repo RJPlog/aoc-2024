@@ -15,15 +15,17 @@ fun LinLay(pattern: String, layout: String, count: Int = 0): Int {
                     layPossible += 1 
                 } 
             } else {
-                if (true) {  // hier könnte mein Eintragen (layPossible < 1), dann würde man nach dem ersten Teffer abbreichen (part1 with original data)
+                
                 //println("$insert    else : ${layout.take(currPat.length)} vs $currPat")
                 if (layout.take(currPat.length) == currPat) {
-                  //println( "$insert     next level: ${layout.drop(currPat.length)}")
-                    layPossible += LinLay(pattern, layout.drop(currPat.length), count+4)
+                    var newLay = layout.drop(currPat.length)
+                    val reducedAvPat = (pattern.split(", ").filter {newLay.contains(it)}).joinToString(", ")
+                    //println( "$insert     next level: ${reducedAvPat.length}")
+                    layPossible += LinLay(reducedAvPat, newLay, count+4)
                 } else {
                     layPossible += 0
                 }
-                }
+                
             }
         }
 
@@ -63,23 +65,17 @@ fun main() {
             }
         }
         reducedAvPat = reduceList.joinToString(", ")
-        println(reduceList.size)
 
-
-        
         val singleResult = LinLay(reducedAvPat, pat2Crea, 0)
-        println("$pat2Crea -> $singleResult}")
+        println("$pat2Crea -> $singleResult")
         if (singleResult >= 1) solution1 += 1
         solution2 += singleResult
     }
 
-
     println("  part1: $solution1 designs are possible") 
-    
     
     println("  part2:  you get $solution2 if you add up the number of different ways")
     
     t1 = System.currentTimeMillis() - t1
 	println("puzzle solved in ${t1} ms")
 }
-
