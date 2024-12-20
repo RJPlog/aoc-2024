@@ -59,6 +59,8 @@ fun cheatRace(puzzleInput: String, w: Int, h: Int, part: Int): Int {
 }
 
 fun main() {
+
+    var t1 = System.currentTimeMillis()
    
     println("--- Day 20: Race Condition ---")
 
@@ -70,8 +72,41 @@ fun main() {
      
     var width = puzzleInput[0].length
     var height = puzzleInput.size
-    
-    var solution1 = cheatRace(puzzleInput.joinToString(""), width, height, 1)
+
+    var pI = puzzleInput.joinToString("")
+    // create list with coorinates of cheating places
+    var cheatCoord = mutableListOf<Int>()
+    for (y in 1..height-2) {
+        for (x in 1..width-2) {
+            var count = 0
+            if (pI[(x)+(width*y)] == '#') {
+                if (pI[(x-1)+width*(y)] != '#') count += 1
+                if (pI[(x)+width*(y-1)] != '#') count += 1
+                if (pI[(x+1)+width*(y)] != '#') count += 1
+                if (pI[(x)+width*(y+1)] != '#') count += 1
+            }
+            if (count > 1) cheatCoord.add(x+width*y)
+        }
+    }
+
+
+
+    var solutionWithOutCheat = cheatRace(puzzleInput.joinToString(""), width, height, 1)
+    var solution1 = 0
+
+    println("# of possible cheats: ${cheatCoord.size} and original duration $solutionWithOutCheat")
+
+    var i = 0
+    cheatCoord.forEach {
+        i += 1
+        var pIMod = pI.replaceRange(it, it+1, ".")
+        var saving = solutionWithOutCheat - cheatRace(pIMod, width, height, 1)
+        println("$i: saving: $saving")
+        if ( saving >= 100) solution1 += 1 
+    }
 
     println("  part1: $solution1 cheats would save you at least 100 picoseconds")
+
+    t1 = System.currentTimeMillis() - t1
+	println("puzzle solved in ${t1} ms")
 }
