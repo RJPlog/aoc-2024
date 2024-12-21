@@ -26,30 +26,26 @@ fun transN2N(pin: String): List<String> {
     n2n.put("><", listOf("<<A"))
     n2n.put("v^", listOf("^A"))
 
-    
     var startPin = "A"
     var firstSeq = mutableListOf<String>()
     firstSeq.add("")
-  //  println("pin: $pin")
+
     pin.forEach {
-                    var firstSeqNew = mutableListOf<String>()
-                    var move = startPin + it.toString()
-                    if (n2n.containsKey(move)) {
-                        n2n.getValue(move).forEach {
-                            for (j in 0..firstSeq.size-1) {
-                                firstSeqNew.add(firstSeq[j] + it)
-                            }
-                        }
-                        
-                    } else {
-                        println("   $move missing in n2n map")
-                    }
-                    firstSeq.clear()
-                    firstSeq.addAll(firstSeqNew)
-                    startPin = it.toString()
+        var firstSeqNew = mutableListOf<String>()
+        var move = startPin + it.toString()
+        if (n2n.containsKey(move)) {
+            n2n.getValue(move).forEach {
+                for (j in 0..firstSeq.size-1) {
+                    firstSeqNew.add(firstSeq[j] + it)
                 }
-    //    println("next Seq: $firstSeq, startPin: $startPin")
-        
+            }
+        } else {
+            println("   $move missing in n2n map")
+        }
+        firstSeq.clear()
+        firstSeq.addAll(firstSeqNew)
+        startPin = it.toString()
+    }
     return firstSeq
 }
 
@@ -68,12 +64,12 @@ fun transN2D(pin: String): List<String> {
     n2d.put("A1", listOf("^<<A", "<^<A"))  
     n2d.put("17", listOf("^^A"))
     n2d.put("79", listOf(">>A"))
-    n2d.put("A4", listOf("^^<<A", "^<^<A", "<^^>A", "<^^<A"))  // !
+    n2d.put("A4", listOf("^^<<A", "^<^<A", "<^^>A", "<^^<A")) 
     n2d.put("45", listOf(">A"))
     n2d.put("56", listOf(">A"))
     n2d.put("6A", listOf("vvA"))  
     n2d.put("A3", listOf("^A"))
-    n2d.put("37", listOf("^^<<A", "<<^^A", "<^<^A", "^<<^A"))  // there is a differenz between ^^<< and <<^^  -> follow that up. There is even a strange thing that <<^^ makes 57 as a min
+    n2d.put("37", listOf("^^<<A", "<<^^A", "<^<^A", "^<<^A"))  
     n2d.put("A8", listOf("^^^<A", "<^^^A", "^<^^A", "^^<^A"))
     n2d.put("03", listOf(">^A", "^>A"))
     n2d.put("3A", listOf("vA"))
@@ -92,95 +88,73 @@ fun transN2D(pin: String): List<String> {
     var startPin = "A"
     var firstSeq = mutableListOf<String>()
     firstSeq.add("")
-//    println("pin: $pin")
+
     pin.forEach {
-                    var firstSeqNew = mutableListOf<String>()
-                    var move = startPin + it.toString()
-                    if (n2d.containsKey(move)) {
-                        n2d.getValue(move).forEach {
-                            for (j in 0..firstSeq.size-1) {
-                                firstSeqNew.add(firstSeq[j] + it)
-                            }
-                        }
-                        
-                    } else {
-                        println("   $move missing in n2d map")
-                    }
-                    firstSeq.clear()
-                    firstSeq.addAll(firstSeqNew)
-                    startPin = it.toString()
-                }
-       // println("firstSeq: $firstSeq, startPin: $startPin")
-        
+        var firstSeqNew = mutableListOf<String>()
+        var move = startPin + it.toString()
+        if (n2d.containsKey(move)) {
+            n2d.getValue(move).forEach {
+            for (j in 0..firstSeq.size-1) {
+                firstSeqNew.add(firstSeq[j] + it)
+            }
+        }         
+        } else {
+            println("   $move missing in n2d map")
+        }
+        firstSeq.clear()
+        firstSeq.addAll(firstSeqNew)
+        startPin = it.toString()
+    } 
     return firstSeq
 }
 
 fun keypadCon(pins: List<String>): Int {
     
     var result = 0
-    
-
-
     var possibleSequencesFirstTrans = mutableListOf<String>()
     var possibleSequencesSecondTrans = mutableListOf<String>()
     var possibleSequencesThirdTrans = mutableListOf<String>()
     
     pins.forEach {
-        println(it)
         possibleSequencesFirstTrans.addAll(transN2D(it))
-        
         possibleSequencesFirstTrans.forEach{
             possibleSequencesSecondTrans.addAll(transN2N(it))
         }
-        
         possibleSequencesSecondTrans.forEach {
             possibleSequencesThirdTrans.addAll(transN2N(it))
-        }
+        } 
         
-          //  println(possibleSequencesFirstTrans)
-          //  println(possibleSequencesSecondTrans)
-          //  println(possibleSequencesThirdTrans)
-
         var minSeq = possibleSequencesThirdTrans[0].length
-        
         possibleSequencesThirdTrans.forEach {
             if (it.length < minSeq) minSeq = it.length
         }
-        
-        println("pin $it: -> ${minSeq}, pinvalue: ${it.filter {it.isDigit()}.toInt()}")
+
         result += minSeq * it.filter {it.isDigit()}.toInt()
         
         possibleSequencesFirstTrans.clear()
         possibleSequencesSecondTrans.clear()
         possibleSequencesThirdTrans.clear()
-    }
-    
+    }    
     return result
 }
 
 fun main() {
     
-     var t1 = System.currentTimeMillis()
+var t1 = System.currentTimeMillis()
     
-   
-    println("--- Day 21: Keypad Conundrum ---")
+println("--- Day 21: Keypad Conundrum ---")
     
-    var puzzleInput = listOf("029A", "980A", "179A", "456A", "379A")
+var puzzleInput = listOf("029A", "980A", "179A", "456A", "379A")
     
-    puzzleInput = listOf("803A", "528A", "586A", "341A", "319A")
-    
-    
-    var solution1 = keypadCon(puzzleInput)
+//  puzzleInput = listOf("XXXX", "XXXX", "XXXX", "XXXX", "XXXX")
+        
+var solution1 = keypadCon(puzzleInput)
 
-    println("  part1: the sum of the complexities is $solution1")   
-    
-    // 185521 is to high --> debug if there are any wrong assignements.
-    // 154988 is to high
+println("  part1: the sum of the complexities is $solution1")   
 
 //    var solution2 = maze(puzzleInput.joinToString(""), width, height, 2)
 //    println("   part2: $solution2 tiles are part of at least one of the best paths")
     
-  t1 = System.currentTimeMillis() - t1
-	println("puzzle solved in ${t1} ms")
+t1 = System.currentTimeMillis() - t1
+println("puzzle solved in ${t1} ms")
 }
-
