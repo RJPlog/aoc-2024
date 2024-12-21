@@ -2,15 +2,15 @@ fun transN2N(pin: String): List<String> {
     var n2n = mutableMapOf<String,List<String>>()
     n2n.put("AA", listOf("A"))
     n2n.put("A<", listOf("v<<A", "<v<A"))
-    n2n.put("<A", listOf(">>^A", ">^>"))
+    n2n.put("<A", listOf(">>^A", ">^>A"))
     n2n.put("A^", listOf("<A"))
     n2n.put("^A", listOf(">A"))
     n2n.put("^^", listOf("A"))
     n2n.put("^>", listOf(">vA", "v>A"))
     n2n.put(">A", listOf("^A"))
-    n2n.put("Av", listOf("v<A","<v"))
+    n2n.put("Av", listOf("v<A","<vA"))
     n2n.put("vv", listOf("A"))
-    n2n.put("vA", listOf(">^A", "^>"))
+    n2n.put("vA", listOf(">^A", "^>A"))
     n2n.put("v<", listOf("<A"))
     n2n.put("<<", listOf("A"))
     n2n.put("A>", listOf("vA"))
@@ -73,8 +73,8 @@ fun transN2D(pin: String): List<String> {
     n2d.put("56", listOf(">A"))
     n2d.put("6A", listOf("vvA"))  
     n2d.put("A3", listOf("^A"))
-    n2d.put("37", listOf("^^<<A", "<<^^A", "<^<^A", "^<^<^A"))  // there is a differenz between ^^<< and <<^^  -> follow that up. There is even a strange thing that <<^^ makes 57 as a min
-    n2d.put("A8", listOf("^^^<A", "<^^^^A", "^<^^A", "^^<A"))
+    n2d.put("37", listOf("^^<<A", "<<^^A", "<^<^A", "^<<^A"))  // there is a differenz between ^^<< and <<^^  -> follow that up. There is even a strange thing that <<^^ makes 57 as a min
+    n2d.put("A8", listOf("^^^<A", "<^^^A", "^<^^A", "^^<^A"))
     n2d.put("03", listOf(">^A", "^>A"))
     n2d.put("3A", listOf("vA"))
     n2d.put("A5", listOf("^^<A", "<^^A", "^<^A"))
@@ -183,3 +183,4 @@ fun main() {
   t1 = System.currentTimeMillis() - t1
 	println("puzzle solved in ${t1} ms")
 }
+
