@@ -1,24 +1,30 @@
 fun transN2N(pin: String): List<String> {
-    var n2n = mutableMapOf<String,String>()
-    n2n.put("AA", "A")
-    n2n.put("A<", "v<<A")
-    n2n.put("<A", ">>^A")
-    n2n.put("A^", "<A")
-    n2n.put("^A",">A")
-    n2n.put("^^","A")
-    n2n.put("^>",">vA")
-    n2n.put(">A","^A")
-    n2n.put("Av","v<A")
-    n2n.put("vv","A")
-    n2n.put("vA",">^A")
-    n2n.put("v<", "<A")
-    n2n.put("<<", "A")
-    n2n.put("A>", "vA")
-    n2n.put(">>", "A")
-    n2n.put(">^", "^<A")
-    n2n.put(">v", "<A")
-    n2n.put("^<", "v<A")
-    n2n.put("<^", ">^A")
+    var n2n = mutableMapOf<String,List<String>>()
+    n2n.put("AA", listOf("A"))
+    n2n.put("A<", listOf("v<<A", "<v<A"))
+    n2n.put("<A", listOf(">>^A", ">^>"))
+    n2n.put("A^", listOf("<A"))
+    n2n.put("^A", listOf(">A"))
+    n2n.put("^^", listOf("A"))
+    n2n.put("^>", listOf(">vA", "v>A"))
+    n2n.put(">A", listOf("^A"))
+    n2n.put("Av", listOf("v<A","<v"))
+    n2n.put("vv", listOf("A"))
+    n2n.put("vA", listOf(">^A", "^>"))
+    n2n.put("v<", listOf("<A"))
+    n2n.put("<<", listOf("A"))
+    n2n.put("A>", listOf("vA"))
+    n2n.put(">>", listOf("A"))
+    n2n.put(">^", listOf("^<A", "<^A"))
+    n2n.put(">v", listOf("<A"))
+    n2n.put("^<", listOf("v<A"))
+    n2n.put("<^", listOf(">^A"))
+    n2n.put("<v", listOf(">A"))
+    n2n.put("^v", listOf("vA"))
+    n2n.put("v>", listOf(">A"))
+    n2n.put("<>", listOf(">>A"))
+    n2n.put("><", listOf("<<A"))
+    n2n.put("v^", listOf("^A"))
 
     
     var startPin = "A"
@@ -36,7 +42,7 @@ fun transN2N(pin: String): List<String> {
                         }
                         
                     } else {
-                        println("   $move missing in n2d map")
+                        println("   $move missing in n2n map")
                     }
                     firstSeq.clear()
                     firstSeq.addAll(firstSeqNew)
@@ -53,22 +59,36 @@ fun transN2D(pin: String): List<String> {
     n2d.put("AA", listOf("A"))
     n2d.put("A0", listOf("<A"))
     n2d.put("02", listOf("^A"))
-    n2d.put("29", listOf("^^>A"))  // !
+    n2d.put("29", listOf("^^>A", "^>^A", ">^^A")) 
     n2d.put("9A", listOf("vvvA"))
     n2d.put("A9", listOf("^^^A"))
     n2d.put("98", listOf("<A"))
     n2d.put("80", listOf("vvvA"))
     n2d.put("0A", listOf(">A"))
-    n2d.put("A1", listOf("^<<A"))  // !
+    n2d.put("A1", listOf("^<<A", "<^<A"))  
     n2d.put("17", listOf("^^A"))
     n2d.put("79", listOf(">>A"))
-    n2d.put("A4", listOf("^^<<A"))  // !
+    n2d.put("A4", listOf("^^<<A", "^<^<A", "<^^>A", "<^^<A"))  // !
     n2d.put("45", listOf(">A"))
     n2d.put("56", listOf(">A"))
     n2d.put("6A", listOf("vvA"))  
     n2d.put("A3", listOf("^A"))
-    n2d.put("37", listOf("^^<<A", "<<^^A", "<^<^", "^<^<^"))  // there is a differenz between ^^<< and <<^^  -> follow that up. There is even a strange thing that <<^^ makes 57 as a min
-    
+    n2d.put("37", listOf("^^<<A", "<<^^A", "<^<^A", "^<^<^A"))  // there is a differenz between ^^<< and <<^^  -> follow that up. There is even a strange thing that <<^^ makes 57 as a min
+    n2d.put("A8", listOf("^^^<A", "<^^^^A", "^<^^A", "^^<A"))
+    n2d.put("03", listOf(">^A", "^>A"))
+    n2d.put("3A", listOf("vA"))
+    n2d.put("A5", listOf("^^<A", "<^^A", "^<^A"))
+    n2d.put("52", listOf("vA"))
+    n2d.put("28", listOf("^^A"))
+    n2d.put("8A", listOf(">vvvA", "v>vvA", "vv>vA", "vvv>A"))
+    n2d.put("58", listOf("^A"))
+    n2d.put("86", listOf(">vA", "v>A"))
+    n2d.put("34", listOf("^<<A", "<^<A", "<<^A"))
+    n2d.put("41", listOf("vA"))
+    n2d.put("1A", listOf(">>vA", ">v>A"))
+    n2d.put("31", listOf("<<A"))
+    n2d.put("19", listOf(">>^^A", ">^>^A", ">^^>A", "^^>>A"))
+
     var startPin = "A"
     var firstSeq = mutableListOf<String>()
     firstSeq.add("")
@@ -102,8 +122,8 @@ fun keypadCon(pins: List<String>): Int {
 
 
     var possibleSequencesFirstTrans = mutableListOf<String>()
-        var possibleSequencesSecondTrans = mutableListOf<String>()
-            var possibleSequencesThirdTrans = mutableListOf<String>()
+    var possibleSequencesSecondTrans = mutableListOf<String>()
+    var possibleSequencesThirdTrans = mutableListOf<String>()
     
     pins.forEach {
         println(it)
@@ -113,16 +133,26 @@ fun keypadCon(pins: List<String>): Int {
             possibleSequencesSecondTrans.addAll(transN2N(it))
         }
         
-        //possibleSequencesSecondTrans.forEach {
-        //    possibleSequencesThirdTrans.addAll(transN2N(it))
-        //}
+        possibleSequencesSecondTrans.forEach {
+            possibleSequencesThirdTrans.addAll(transN2N(it))
+        }
         
-                println(possibleSequencesFirstTrans)
-            //    println(possibleSequencesSecondTrans)
-          //      println(possibleSequencesThirdTrans)
-        //println("pin $pin: -> ${firstSeq.length}, pinvalue: ${pin.filter {it.isDigit()}.toInt()}")
-        //result += firstSeq.length * pin.filter {it.isDigit()}.toInt()
+          //  println(possibleSequencesFirstTrans)
+          //  println(possibleSequencesSecondTrans)
+          //  println(possibleSequencesThirdTrans)
 
+        var minSeq = possibleSequencesThirdTrans[0].length
+        
+        possibleSequencesThirdTrans.forEach {
+            if (it.length < minSeq) minSeq = it.length
+        }
+        
+        println("pin $it: -> ${minSeq}, pinvalue: ${it.filter {it.isDigit()}.toInt()}")
+        result += minSeq * it.filter {it.isDigit()}.toInt()
+        
+        possibleSequencesFirstTrans.clear()
+        possibleSequencesSecondTrans.clear()
+        possibleSequencesThirdTrans.clear()
     }
     
     return result
@@ -137,13 +167,16 @@ fun main() {
     
     var puzzleInput = listOf("029A", "980A", "179A", "456A", "379A")
     
-    puzzleInput = listOf("379A")
+    puzzleInput = listOf("803A", "528A", "586A", "341A", "319A")
     
     
     var solution1 = keypadCon(puzzleInput)
 
-    println("  part1: the sum of the complexities is $solution1")
+    println("  part1: the sum of the complexities is $solution1")   
     
+    // 185521 is to high --> debug if there are any wrong assignements.
+    // 154988 is to high
+
 //    var solution2 = maze(puzzleInput.joinToString(""), width, height, 2)
 //    println("   part2: $solution2 tiles are part of at least one of the best paths")
     
