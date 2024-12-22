@@ -1,9 +1,10 @@
+import java.io.File
+
 fun secrets(in1: List<Int>): Long {
     
     var result = 0L
 	
     in1.forEach {
-        //println(it)
         var secret = it.toLong()
         for (i in 0..1999) {
             // x 64 - mix - prune
@@ -17,7 +18,6 @@ fun secrets(in1: List<Int>): Long {
             secret = secret % 16777216
             //println(secret)
         }
-        println("$secret: secret")
         result += secret
     }
     return result
@@ -26,12 +26,14 @@ fun secrets(in1: List<Int>): Long {
 fun main() {
     
      var t1 = System.currentTimeMillis()
-     
-     println(100000000 % 16777216)
     
     println("--- Day 22: Monkey Market ---")
     
-    var puzzleInput = listOf(1, 10, 100, 2024)
+    var puzzleInput = mutableListOf<Int>()
+
+    File("day2422_puzzle_input.txt").forEachLine {
+        puzzleInput.add(it.toInt())
+    }
     
     //puzzleInput = listOf(10)
     
