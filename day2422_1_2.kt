@@ -30,12 +30,27 @@ fun secrets(in1: List<Int>, part: Int = 0): Long {
     if (part == 1) {
         return result
     }
+
+
+    // generate a list with all change sequences
+    var changes = mutableListOf<List<Int>>()
+    overallPriceList.forEach {
+        var change = mutableListOf<Int>()
+        it.windowed(5).forEach {
+            change.add(it[1].toInt() - it[0].toInt())
+            change.add(it[2].toInt() - it[1].toInt())
+            change.add(it[3].toInt() - it[2].toInt())
+            change.add(it[4].toInt() - it[3].toInt())
+        }
+        if (!changes.contains(change)) changes.add(change)
+    }
+    println(changes)
     
     var bananas = 0
-    for (m in -9..9) {
-        for ( n in -9..9) {
-            for (o in -9..9) {
-                for (p in -9..9) {
+    for (m in -2..-2) {
+        for ( n in -1..-1) {
+            for (o in -9..-9) {
+                for (p in -9..-9) {
                     var currentBananas = 0
                     overallPriceList.forEach {
                         var currentPriceList = it
@@ -55,7 +70,7 @@ fun secrets(in1: List<Int>, part: Int = 0): Long {
                                     }
                                 }
                             }
-                        }
+                        
                     }
                     println("$m $n $o $p max: $bananas currentBanans: $currentBananas")
                     if (currentBananas > bananas) bananas = currentBananas
