@@ -1,11 +1,15 @@
 import java.io.File
 
-fun secrets(in1: List<Int>): Long {
+fun secrets(in1: List<Int>, part: Int = 0): Long {
     
     var result = 0L
+
+    var overallPriceList = mutableListOf<String>()
 	
     in1.forEach {
         var secret = it.toLong()
+        var priceList = ""
+        priceList += secret.toString().takeLast(1)
         for (i in 0..1999) {
             // x 64 - mix - prune
             secret = ((secret * 64) xor secret) 
@@ -16,11 +20,20 @@ fun secrets(in1: List<Int>): Long {
             // x 2048
             secret = ((secret * 2048) xor secret) 
             secret = secret % 16777216
-            //println(secret)
+            var price = secret.toString().takeLast(1)
+            priceList += price
         }
+        overallPriceList.add(priceList)
         result += secret
     }
-    return result
+
+
+    println(overallPriceList.size)
+    if (part == 1) {
+        return result
+    }
+
+    return -1 
 }
 
 fun main() {
@@ -38,7 +51,7 @@ fun main() {
     //puzzleInput = listOf(10)
     
     
-    var solution1 = secrets(puzzleInput)
+    var solution1 = secrets(puzzleInput, 1)
 
     println("  part1: the sum of the 2000th secret number is $solution1")
     
