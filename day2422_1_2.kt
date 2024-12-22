@@ -27,13 +27,48 @@ fun secrets(in1: List<Int>, part: Int = 0): Long {
         result += secret
     }
 
-
-    println(overallPriceList.size)
     if (part == 1) {
         return result
     }
+    
+    var bananas = 0
+    for (m in -9..9) {
+        for ( n in -9..9) {
+            for (o in -9..9) {
+                for (p in -9..9) {
+                    var currentBananas = 0
+                    overallPriceList.forEach {
+                        var currentPriceList = it
+                        var patternFound = false
+                        currentPriceList.windowed(5) {
+                            if (it[1].toInt() - it[0].toInt() == m ) {
+                                if (it[2].toInt() - it[1].toInt() == n ) {
+                                    if (it[3].toInt() - it[2].toInt() == o ) {
+                                        if (it[4].toInt() - it[3].toInt() == p ) {
+                                            if (!patternFound) {
+                                                currentBananas += it[4].toString().toInt()
+                                                patternFound = true
+                                                println("$m$n$o$p: $currentBananas")
+                                            }
+                                            
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    println("$m $n $o $p max: $bananas currentBanans: $currentBananas")
+                    if (currentBananas > bananas) bananas = currentBananas
+                }
+            }
+        }
+    }
 
-    return -1 
+
+
+    result= bananas.toLong()
+
+    return result
 }
 
 fun main() {
@@ -55,8 +90,8 @@ fun main() {
 
     println("  part1: the sum of the 2000th secret number is $solution1")
     
-//    var solution2 = maze(puzzleInput.joinToString(""), width, height, 2)
-//    println("   part2: $solution2 tiles are part of at least one of the best paths")
+    var solution2 = secrets(puzzleInput, 2)
+    println("   part2: the most bananas you can get is $solution2")
     
   t1 = System.currentTimeMillis() - t1
 	println("puzzle solved in ${t1} ms")
