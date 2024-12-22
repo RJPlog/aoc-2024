@@ -30,27 +30,35 @@ fun secrets(in1: List<Int>, part: Int = 0): Long {
     if (part == 1) {
         return result
     }
-
-
-    // generate a list with all change sequences
+    
+	
+	    // generate a list with all change sequences
+	var i = 0
     var changes = mutableListOf<List<Int>>()
     overallPriceList.forEach {
-        var change = mutableListOf<Int>()
+		i += 1
         it.windowed(5).forEach {
+			var change = mutableListOf<Int>()
             change.add(it[1].toInt() - it[0].toInt())
             change.add(it[2].toInt() - it[1].toInt())
             change.add(it[3].toInt() - it[2].toInt())
             change.add(it[4].toInt() - it[3].toInt())
+			if (!changes.contains(change)) changes.add(change)
         }
-        if (!changes.contains(change)) changes.add(change)
+		println("generate Sequence for buyer $i, ${changes.size}")
+
     }
-    println(changes)
-    
+	println()
+    println("start part2 for ${changes.size} identified grandient sequences")
+	
+    i = changes.size
     var bananas = 0
-    for (m in -2..-2) {
-        for ( n in -1..-1) {
-            for (o in -9..-9) {
-                for (p in -9..-9) {
+    changes.forEach {
+		var m = it[0]
+		var n = it[1]
+		var o = it[2]
+		var p = it[3]
+		i -=1
                     var currentBananas = 0
                     overallPriceList.forEach {
                         var currentPriceList = it
@@ -63,20 +71,17 @@ fun secrets(in1: List<Int>, part: Int = 0): Long {
                                             if (!patternFound) {
                                                 currentBananas += it[4].toString().toInt()
                                                 patternFound = true
-                                                println("$m$n$o$p: $currentBananas")
                                             }
                                             
                                         }
                                     }
                                 }
                             }
-                        
+                        }
                     }
-                    println("$m $n $o $p max: $bananas currentBanans: $currentBananas")
+                    println("$i: ($m $n $o $p) max: $bananas currentBanans: $currentBananas, $bananas")
                     if (currentBananas > bananas) bananas = currentBananas
-                }
-            }
-        }
+
     }
 
 
