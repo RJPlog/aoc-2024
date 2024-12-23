@@ -102,14 +102,15 @@ fun lanParty2(pI: List<String>, part: Int = 2): String {
 	
 	           
 	    	}
-    	println("$n: $allLansNew")
+        // do all the clear allLans ...
         allLans.clear()
         allLans.addAll(allLansNew)
         allLansNew.clear()
         if (allLans.size > 0) passwd = allLans[0].joinToString(",")
+        println("$n: ${allLans.size}, passwd: $passwd")
         n+=1
 	}
-        // do all the clear allLans ...
+
         
 return passwd
 }
@@ -128,12 +129,11 @@ fun main() {
     }
     
     var solution1 = lanParty(puzzleInput)
-
     println("  part1: $solution1 contain at least one computer with a name that starts with t")
     
-  var solution2 = lanParty2(puzzleInput)
-   println("   part2: the password to get into the LAN party is >>$solution2<<")
+    var solution2 = lanParty2(puzzleInput)
+    println("   part2: the password to get into the LAN party is >>$solution2<<")
     
-  t1 = System.currentTimeMillis() - t1
+    t1 = System.currentTimeMillis() - t1
 	println("puzzle solved in ${t1} ms")
 }
