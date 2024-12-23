@@ -1,3 +1,5 @@
+import java.io.File
+
 fun lanParty(pI: List<String>, part: Int = 0): Int {
     
     var posPC = mutableListOf<String>()
@@ -12,9 +14,11 @@ fun lanParty(pI: List<String>, part: Int = 0): Int {
             }
         
     }
-    //println(posPC)
+    //println(posPC.size)
     
     var intercon = mutableListOf<List<String>>()
+
+
 	for (i in 0..posPC.size-1) {
         var pc1 = posPC[i]
         for (j in i..posPC.size-1) {
@@ -22,7 +26,7 @@ fun lanParty(pI: List<String>, part: Int = 0): Int {
             for (k in j..posPC.size-1) {
                 var pc3 = posPC[k]
                 if (pc1[0] == 't' || pc2[0] == 't' || pc3[0] == 't') {
-
+                    println("$i, $j, $k")
                     if ((pI.contains(pc1+"-"+pc2) || pI.contains(pc2+"-"+pc1)) && (pI.contains(pc2+"-"+pc3) || pI.contains(pc3+"-"+pc2)) && (pI.contains(pc1+"-"+pc3) || pI.contains(pc3+"-"+pc1))) {
                        //println("$pc1, $pc2, $pc3")
                        var con = listOf(pc1, pc2, pc3).sorted()
@@ -45,40 +49,12 @@ fun main() {
      var t1 = System.currentTimeMillis()
     
     println("--- Day 23: LAN Party ---")
-    
-    var puzzleInput = listOf("kh-tc",
-"qp-kh",
-"de-cg",
-"ka-co",
-"yn-aq",
-"qp-ub",
-"cg-tb",
-"vc-aq",
-"tb-ka",
-"wh-tc",
-"yn-cg",
-"kh-ub",
-"ta-co",
-"de-co",
-"tc-td",
-"tb-wq",
-"wh-td",
-"ta-ka",
-"td-qp",
-"aq-cg",
-"wq-ub",
-"ub-vc",
-"de-ta",
-"wq-aq",
-"wq-vc",
-"wh-yn",
-"ka-de",
-"kh-ta",
-"co-tc",
-"wh-qp",
-"tb-vc",
-"td-yn")
-    
+
+    var puzzleInput = mutableListOf<String>()
+
+    File("day2423_puzzle_input.txt").forEachLine {
+        puzzleInput.add(it)
+    }
     
     var solution1 = lanParty(puzzleInput)
 
