@@ -44,6 +44,77 @@ fun lanParty(pI: List<String>, part: Int = 0): Int {
     return intercon.size
 }
 
+
+fun lanParty2(pI: List<String>, part: Int = 2): String {
+    
+    // ----------- step 1 -----------------
+    // create list with one2one connections alphabethically sorted
+    // create list with all ids of pc
+    
+    var one2oneList = mutableListOf<List<String>>()
+    var pcID = mutableListOf<String>()
+	pI.forEach{
+        var ids = it.split("-")
+        var one2one = listOf(ids[0], ids[1]).sorted()
+        one2oneList.add(one2one)
+        if (!pcID.contains(ids[0])) pcID.add(ids[0])
+        if (!pcID.contains(ids[1])) pcID.add(ids[1])
+    }
+    one2oneList.sortBy {it[0]}
+    pcID.sort()
+    
+    println(one2oneList)
+    println(pcID)
+    println()
+    
+    //------------- step 2------------------
+    // create list with lan connetions (initalvalue: copy of one to one connections)
+    // set passwd to first element of that list
+    var allLans =  mutableListOf<List<String>>()
+    allLans.addAll(one2oneList)
+    var passwd = allLans[0].joinToString(",")
+    
+    // iterate trough all lan networks and try if you can add another pc
+    var n = 0
+    while (allLans.size > 0) {
+    var allLansNew = mutableListOf<List<String>>()
+    allLans.forEach {
+	        var currentLan = it
+	
+	        // iterate through pcID list and check if current id is connected to all the IDs of the current lan
+	        var nextLetter = pcID.indexOf(currentLan[currentLan.size-1])
+	        if (nextLetter+1 < pcID.size-1)
+	            for (i in nextLetter+1..pcID.size-1) { //startpoint can be switchet to the id after the last id of current lan
+	                var connection = true
+	                currentLan.forEach {
+	                    if (!one2oneList.contains(listOf(it, pcID[i]))) {
+	                       connection = false 
+	                    }
+	                }
+	                if (connection) {
+	                    var addPC = mutableListOf<String>()
+	                    addPC.addAll(currentLan)
+	                    addPC.add(pcID[i])
+	                    allLansNew.add(addPC)
+	                }
+	
+	            }
+	
+	           
+	    	}
+    	println("$n: $allLansNew")
+        allLans.clear()
+        allLans.addAll(allLansNew)
+        allLansNew.clear()
+        if (allLans.size > 0) passwd = allLans[0].joinToString(",")
+        n+=1
+	}
+        // do all the clear allLans ...
+        
+return passwd
+}
+
+
 fun main() {
     
      var t1 = System.currentTimeMillis()
@@ -60,8 +131,8 @@ fun main() {
 
     println("  part1: $solution1 contain at least one computer with a name that starts with t")
     
-//    var solution2 = maze(puzzleInput.joinToString(""), width, height, 2)
-//    println("   part2: $solution2 tiles are part of at least one of the best paths")
+  var solution2 = lanParty2(puzzleInput)
+   println("   part2: the password to get into the LAN party is >>$solution2<<")
     
   t1 = System.currentTimeMillis() - t1
 	println("puzzle solved in ${t1} ms")
