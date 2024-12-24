@@ -1,3 +1,4 @@
+import java.io.File
 
 fun main() {
 
@@ -43,7 +44,6 @@ fun main() {
 		network = network.replace("0 XOR 0", "0")
 
 		gates.clear()
-		lines.clear()
 	
 		network.split(",").forEach {
 			if (it.substringBefore(" ->") == "0") {
@@ -60,7 +60,7 @@ fun main() {
 		println(gates)
 	}
 		
-	var solution1 = lines.sortedDescending().map {it.takeLast(1)}.joinToString("").toLong(2)
+	var solution1 = lines.filter {it[0] == 'z'}.sortedDescending().map {it.takeLast(1)}.joinToString("").toLong(2)
 	println("  part1: the system output is $solution1")
 
 //	var solution2 = lanParty2(puzzleInput)
