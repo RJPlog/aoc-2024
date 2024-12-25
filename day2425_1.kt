@@ -5,14 +5,36 @@ fun main() {
 
   println("--- Day 25: Code Chronicle ---")
     
-  var keys = mutableListOf<MutableList<Int>>()
-  var locks = mutableListOf<MutableList<Int>>()
+  var keys = mutableListOf<String>()
+  var locks = mutableListOf<String>()
     
+  var scematic = ""
   File("day2425_puzzle_input.txt").forEachLine {
-    println(it)
-	}
+    if (it == "") {
+      scematic = ""
+    } else {
+      scematic += it
+    }
 
-	var solution1 = 1
+    if (scematic.length == 35 ) {
+      if (scematic[0] == '#') locks.add(scematic)
+      if (scematic[0] == '.') keys.add(scematic)
+    }
+	} 
+
+  var solution1 = 0
+
+  locks.forEach {
+    var lock = it
+    keys.forEach {
+      var key = it
+      var overlap = false 
+      for (i in 0..key.length-1) {
+        if (key[i] == '#' && lock[i] == '#') overlap = true
+      }
+      if (!overlap) solution1 += 1
+    }
+  }
 
   println("  part1:  $solution1 unique lock/key pairs fit together")
     
