@@ -1,3 +1,11 @@
+import java.io.File
+
+data class PathX(
+    var path: List<Int>,
+    var score: Int,
+    var lastDir: Char
+)
+
 fun maze(puzzleInput: String, w: Int, h: Int, part: Int): Int {
       
     // initialize all necessary variables for Dijkstra
@@ -84,31 +92,139 @@ fun maze(puzzleInput: String, w: Int, h: Int, part: Int): Int {
     return allNodes.getValue(endIndex)[0]
 }
 
+fun maze2(puzzleInput: String, w: Int, h: Int, maxScore: Int): Int {
+    
+        var startIndex = puzzleInput.indexOf("S")
+        var endIndex = puzzleInput.indexOf("E")
+        var allPath = mutableListOf<PathX>()
+        var path2End = mutableListOf<PathX>()
+        allPath.add(PathX(listOf(startIndex), 0, '>'))
+        
+        var i = 0
+        while (!allPath.isEmpty()) {
+            i += 1
+            var allPathNew = mutableListOf<PathX>()
+            allPath.forEach{
+                var path = it.path
+                var pX = path[it.path.size-1] % w
+                var pY = path[it.path.size-1] / w
+                var score = it.score
+                var dir = it.lastDir
+				// create new paths
+				if (puzzleInput[(pX) + w * (pY-1)] != '#' && !path.contains((pX)+w*(pY-1))) {
+                    var newPath = mutableListOf<Int>()
+                    newPath.addAll(path)
+                    newPath.add((pX)+w*(pY-1))
+                    var newDir = '^'
+                    var newScore = 0
+                    if (dir == '^') {
+                        newScore = 1
+                    } else if (dir == '>' || dir == '<') {
+                    	newScore = 1001
+                    } else {
+                        newScore = 2001
+                    }
+                    if ((pX) + w * (pY-1) == endIndex && score + newScore <= maxScore) {
+                        path2End.add(PathX(newPath, score+newScore, newDir))
+                    } else if (score + newScore <= maxScore) {
+                    	allPathNew.add(PathX(newPath, score+newScore, newDir))
+                    }
+                }
+                if (puzzleInput[(pX+1) + w * (pY)] != '#' && !path.contains((pX+1)+w*(pY))) {
+                    var newPath = mutableListOf<Int>()
+                    newPath.addAll(path)
+                    newPath.add((pX+1)+w*(pY))
+                    var newDir = '>'
+                    var newScore = 0
+                    if (dir == '>') {
+                    	newScore = 1
+                    } else if (dir == '^' || dir == 'v') {
+                    	newScore = 1001
+                    } else {
+                        newScore = 2001
+                    }
+                    if ((pX+1) + w * (pY) == endIndex && score + newScore <= maxScore) {
+                        path2End.add(PathX(newPath, score+newScore, newDir))
+                    } else if (score + newScore <= maxScore) {
+                    	allPathNew.add(PathX(newPath, score+newScore, newDir))
+                    }
+                }
+                if (puzzleInput[(pX) + w * (pY+1)] != '#' && !path.contains((pX)+w*(pY+1))) {
+                    var newPath = mutableListOf<Int>()
+                    newPath.addAll(path)
+                    newPath.add((pX)+w*(pY+1))
+                    var newDir = 'v'
+                    var newScore = 0
+                    if (dir == 'v') {
+                    	newScore = 1
+                    } else if (dir == '>' || dir == '<') {
+                    	newScore = 1001
+                    } else {
+                        newScore = 2001
+                    }
+                    if ((pX) + w * (pY+1) == endIndex && score + newScore <= maxScore) {
+                        path2End.add(PathX(newPath, score+newScore, newDir))
+                    } else if (score + newScore <= maxScore) {
+                    	allPathNew.add(PathX(newPath, score+newScore, newDir))
+                    }
+                }
+                if (puzzleInput[(pX-1) + w * (pY)] != '#' && !path.contains((pX-1)+w*(pY))) {
+                    var newPath = mutableListOf<Int>()
+                    newPath.addAll(path)
+                    newPath.add((pX-1)+w*(pY))
+                    var newDir = '<'
+                    var newScore = 0
+                    if (dir == '<') {
+                    	newScore = 1
+                    } else if (dir == '^' || dir == 'v') {
+                    	newScore = 1001
+                    } else {
+                        newScore = 2001
+                    }
+                    if ((pX-1) + w * (pY) == endIndex && score + newScore <= maxScore) {
+                        path2End.add(PathX(newPath, score+newScore, newDir))
+                   } else if (score + newScore <= maxScore) {
+                    	allPathNew.add(PathX(newPath, score+newScore, newDir))
+                    }
+                }
+            }
+            // exchange pathes
+            println("   -> ${allPathNew.size}")
+            allPath.clear()
+            allPath.addAll(allPathNew)
+        }
+        
+        var modPuzzleInput = puzzleInput
+    	path2End.forEach {
+            it.path.forEach {
+                modPuzzleInput = modPuzzleInput.replaceRange(it, it+1, "O")
+            }
+        }
+        
+        /* modPuzzleInput.chunked(w){
+            println(it)
+        } */
+    
+    return modPuzzleInput.count {it == 'O'}
+}
+
 
 fun main() {
    
     println("--- Day 16: Reindeer Maze ---")
-    
-    var puzzleInput = listOf("###############",
-"#.......#....E#",
-"#.#.###.#.###.#",
-"#.....#.#...#.#",
-"#.###.#####.#.#",
-"#.#.#.......#.#",
-"#.#.#####.###.#",
-"#...........#.#",
-"###.#.#####.#.#",
-"#...#.....#.#.#",
-"#.#.#.###.#.#.#",
-"#.....#...#.#.#",
-"#.###.#.#.#.#.#",
-"#S..#.....#...#",
-"###############")
+	
+    var puzzleInput = mutableListOf<String>()
+	
+	File("day2416_puzzle_input.txt").forEachLine {
+		puzzleInput.add(it)
+	}
      
     var width = puzzleInput[0].length
     var height = puzzleInput.size
     
     var solution1 = maze(puzzleInput.joinToString(""), width, height, 1)
-
     println("  part1: the lowest score a Reindeer could possibly get is $solution1")
+	
+	var solution2 = maze2(puzzleInput.joinToString(""), width, height, solution1)
+    println("   part2: $solution2 tiles are part of at least one of the best paths")
 }
