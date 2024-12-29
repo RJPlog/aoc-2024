@@ -115,23 +115,32 @@ fun maze2(pI: String, w: Int, h: Int, maxScore: Int): Int {
             }
         }
     }
+	
+	    var modPuzzleInput = puzzleInput
     
         var startIndex = puzzleInput.indexOf("S")
         var endIndex = puzzleInput.indexOf("E")
         var allPath = mutableListOf<PathX>()
-        var path2End = mutableListOf<PathX>()
+        //var path2End = mutableListOf<PathX>()
         allPath.add(PathX(listOf(startIndex), 0, '>'))
         
-        var i = 0
+        var i = 0L
+        var finishedPath = 0L
         while (!allPath.isEmpty()) {
-            i += 1
-            var allPathNew = mutableListOf<PathX>()
-            allPath.forEach{
-                var path = it.path
-                var pX = path[it.path.size-1] % w
-                var pY = path[it.path.size-1] / w
-                var score = it.score
-                var dir = it.lastDir
+            i += 1L
+            //var allPathNew = mutableListOf<PathX>()
+			
+			
+			
+            // allPath.forEach{
+            
+				var path2continue = allPath[allPath.size-1]		// take last element out ouf allPath, with this we want to continue
+				allPath.removeAt(allPath.size-1) 							// remove it from allPath, it will be added with next steps
+				    var path = path2continue.path
+                var pX = path[path2continue.path.size-1] % w
+                var pY = path[path2continue.path.size-1] / w
+                var score = path2continue.score
+                var dir = path2continue.lastDir
 				var newScore = 0
 				var newDir = '.'
 				
@@ -150,9 +159,13 @@ fun maze2(pI: String, w: Int, h: Int, maxScore: Int): Int {
                         newScore = 2001
                     }
                     if ((pX) + w * (pY-1) == endIndex && score + newScore <= maxScore) {
-                        path2End.add(PathX(newPath, score+newScore, newDir))
+                        //path2End.add(PathX(newPath, score+newScore, newDir))
+						newPath.forEach {
+                        	modPuzzleInput = modPuzzleInput.replaceRange(it, it+1, "O")
+                        }
+						finishedPath += 1L
                     } else if (score + newScore <= maxScore) {
-                    	allPathNew.add(PathX(newPath, score+newScore, newDir))
+                    	allPath.add(PathX(newPath, score+newScore, newDir))
                     }
                 }
                 if (puzzleInput[(pX+1) + w * (pY)] != '#' && !path.contains((pX+1)+w*(pY))) {
@@ -169,9 +182,13 @@ fun maze2(pI: String, w: Int, h: Int, maxScore: Int): Int {
                         newScore = 2001
                     }
                     if ((pX+1) + w * (pY) == endIndex && score + newScore <= maxScore) {
-                        path2End.add(PathX(newPath, score+newScore, newDir))
+                        //path2End.add(PathX(newPath, score+newScore, newDir))
+						newPath.forEach {
+                        	modPuzzleInput = modPuzzleInput.replaceRange(it, it+1, "O")
+                        }
+						finishedPath += 1L
                     } else if (score + newScore <= maxScore) {
-                    	allPathNew.add(PathX(newPath, score+newScore, newDir))
+                    	allPath.add(PathX(newPath, score+newScore, newDir))
                     }
                 }
                 if (puzzleInput[(pX) + w * (pY+1)] != '#' && !path.contains((pX)+w*(pY+1))) {
@@ -188,9 +205,13 @@ fun maze2(pI: String, w: Int, h: Int, maxScore: Int): Int {
                         newScore = 2001
                     }
                     if ((pX) + w * (pY+1) == endIndex && score + newScore <= maxScore) {
-                        path2End.add(PathX(newPath, score+newScore, newDir))
+                        //path2End.add(PathX(newPath, score+newScore, newDir))
+						newPath.forEach {
+                        	modPuzzleInput = modPuzzleInput.replaceRange(it, it+1, "O")
+                        }
+						finishedPath += 1L
                     } else if (score + newScore <= maxScore) {
-                    	allPathNew.add(PathX(newPath, score+newScore, newDir))
+                    	allPath.add(PathX(newPath, score+newScore, newDir))
                     }
                 }
                 if (puzzleInput[(pX-1) + w * (pY)] != '#' && !path.contains((pX-1)+w*(pY))) {
@@ -207,24 +228,28 @@ fun maze2(pI: String, w: Int, h: Int, maxScore: Int): Int {
                         newScore = 2001
                     }
                     if ((pX-1) + w * (pY) == endIndex && score + newScore <= maxScore) {
-                        path2End.add(PathX(newPath, score+newScore, newDir))
+                        //path2End.add(PathX(newPath, score+newScore, newDir))
+						newPath.forEach {
+                        	modPuzzleInput = modPuzzleInput.replaceRange(it, it+1, "O")
+                        }
+						finishedPath += 1L
                    } else if (score + newScore <= maxScore) {
-                    	allPathNew.add(PathX(newPath, score+newScore, newDir))
+                    	allPath.add(PathX(newPath, score+newScore, newDir))
                     }
                 }
-            }
+            //}   //allPath.forEach
             // exchange pathes
-            println("$i   -> ${allPathNew.size}, ${path2End.size}")
-            allPath.clear()
-            allPath.addAll(allPathNew)
+            println("$i   -> ${allPath.size}, fin. Pathes: $finishedPath")
+            //allPath.clear()
+            //allPath.addAll(allPathNew)
         }
         
-        var modPuzzleInput = puzzleInput
-    	path2End.forEach {
-            it.path.forEach {
-                modPuzzleInput = modPuzzleInput.replaceRange(it, it+1, "O")
-            }
-        }
+
+    	//path2End.forEach {
+        //    it.path.forEach {
+        //        modPuzzleInput = modPuzzleInput.replaceRange(it, it+1, "O")
+        //    }
+        //}
         
         /* modPuzzleInput.chunked(w){
             println(it)
