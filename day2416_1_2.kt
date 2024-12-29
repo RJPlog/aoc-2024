@@ -92,7 +92,29 @@ fun maze(puzzleInput: String, w: Int, h: Int, part: Int): Int {
     return allNodes.getValue(endIndex)[0]
 }
 
-fun maze2(puzzleInput: String, w: Int, h: Int, maxScore: Int): Int {
+fun maze2(pI: String, w: Int, h: Int, maxScore: Int): Int {
+
+    var puzzleInput = pI
+    var deadEnd = true
+    while (deadEnd) {
+        deadEnd = false
+        for (y in 1..h-2) {
+            for (x in 1..w-2) {
+                if(puzzleInput[x + w*y] == '.') {
+                    var count = 0
+                    if (puzzleInput[(x) + w*(y-1)] == '#') count += 1
+                    if (puzzleInput[(x+1) + w*(y)] == '#') count += 1
+                    if (puzzleInput[(x) + w*(y+1)] == '#') count += 1
+                    if (puzzleInput[(x-1) + w*(y)] == '#') count += 1
+                    if (count >= 3) {
+                        puzzleInput = puzzleInput.replaceRange(x+w*y, x+w*y+1, "#")
+                        deadEnd = true
+                    }
+                    
+                }
+            }
+        }
+    }
     
         var startIndex = puzzleInput.indexOf("S")
         var endIndex = puzzleInput.indexOf("E")
@@ -110,13 +132,16 @@ fun maze2(puzzleInput: String, w: Int, h: Int, maxScore: Int): Int {
                 var pY = path[it.path.size-1] / w
                 var score = it.score
                 var dir = it.lastDir
+				var newScore = 0
+				var newDir = '.'
+				
 				// create new paths
 				if (puzzleInput[(pX) + w * (pY-1)] != '#' && !path.contains((pX)+w*(pY-1))) {
                     var newPath = mutableListOf<Int>()
                     newPath.addAll(path)
                     newPath.add((pX)+w*(pY-1))
-                    var newDir = '^'
-                    var newScore = 0
+                    newDir = '^'
+
                     if (dir == '^') {
                         newScore = 1
                     } else if (dir == '>' || dir == '<') {
@@ -134,8 +159,8 @@ fun maze2(puzzleInput: String, w: Int, h: Int, maxScore: Int): Int {
                     var newPath = mutableListOf<Int>()
                     newPath.addAll(path)
                     newPath.add((pX+1)+w*(pY))
-                    var newDir = '>'
-                    var newScore = 0
+                    newDir = '>'
+
                     if (dir == '>') {
                     	newScore = 1
                     } else if (dir == '^' || dir == 'v') {
@@ -153,8 +178,8 @@ fun maze2(puzzleInput: String, w: Int, h: Int, maxScore: Int): Int {
                     var newPath = mutableListOf<Int>()
                     newPath.addAll(path)
                     newPath.add((pX)+w*(pY+1))
-                    var newDir = 'v'
-                    var newScore = 0
+                    newDir = 'v'
+
                     if (dir == 'v') {
                     	newScore = 1
                     } else if (dir == '>' || dir == '<') {
@@ -172,8 +197,8 @@ fun maze2(puzzleInput: String, w: Int, h: Int, maxScore: Int): Int {
                     var newPath = mutableListOf<Int>()
                     newPath.addAll(path)
                     newPath.add((pX-1)+w*(pY))
-                    var newDir = '<'
-                    var newScore = 0
+                    newDir = '<'
+
                     if (dir == '<') {
                     	newScore = 1
                     } else if (dir == '^' || dir == 'v') {
@@ -189,7 +214,7 @@ fun maze2(puzzleInput: String, w: Int, h: Int, maxScore: Int): Int {
                 }
             }
             // exchange pathes
-            println("   -> ${allPathNew.size}")
+            println("$i   -> ${allPathNew.size}, ${path2End.size}")
             allPath.clear()
             allPath.addAll(allPathNew)
         }
