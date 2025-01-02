@@ -1,25 +1,15 @@
 import java.io.File
 
-fun guard(in1: Int, xMod: Int, yMod: Int ): Int {
+fun guard(yM: String, w: Int, h: Int, xP: Int, yP: Int, part: Int, xMod: Int = 0, yMod: Int = 0 ): Int {
 
-    var yardMap = ""
-    var xPos = 0
-    var yPos = 0
-    var width = 0
-    var height = 0
+    var yardMap = yM
+    var xPos = xP
+    var yPos = yP
+    var width = w
+    var height = h
     var i = 0
     var direction = "^"
 
-    File("day2406_puzzle_input.txt").forEachLine {
-        width = it.length
-        yardMap += it
-        if (it.contains("^")) {
-            xPos = it.indexOf("^")
-            yPos = i
-        }
-        i += 1
-    }
-    height = i   
 
 	if (xMod >= 0 && yMod >= 0) {
 	yardMap = yardMap.replaceRange(xMod + yMod*width, xMod + yMod*width + 1, "#")
@@ -78,7 +68,6 @@ fun guard(in1: Int, xMod: Int, yMod: Int ): Int {
             }
 
         } else if (direction == "<") {
-
             if (xPos - 1 >= 0) {
 				 if (yardMap[xPos - 1 + width*(yPos)] != '#') {
                     xPos -= 1
@@ -93,12 +82,12 @@ fun guard(in1: Int, xMod: Int, yMod: Int ): Int {
             }
         }
 
-         i += 1
+        i += 1
 		
 		if (i > width * height) guardInLoop = true
 		if (lastFourTurns.size > 8 && lastFourTurns.takeLast(4) == lastFourTurns.takeLast(8).dropLast(4)) guardInLoop= true
     }
-    if (in1 == 1) {
+    if (part == 1) {
         return yardMap.count { it != '.' && it != '#' }
     } else {
 		if (guardInLoop) {
@@ -113,19 +102,38 @@ fun main() {
 
     var t1 = System.currentTimeMillis()
 
+    var yardMap = ""
+    var xPos = 0
+    var yPos = 0
+    var width = 0
+    var height = 0
+    var i = 0
+
+    File("day2406_puzzle_input.txt").forEachLine {
+        width = it.length
+        yardMap += it
+        if (it.contains("^")) {
+            xPos = it.indexOf("^")
+            yPos = i
+        }
+        i += 1
+    }
+    height = i   
+
+
     println("--- Day 6: Guard Gallivant ---")
     
-    println("   the guard will visit ${guard(1,-1,-1)} distinct points")
+    println("   the guard will visit ${guard(yardMap, width, height, xPos, yPos, 1)} distinct points")
 	   
     var result2 = 0
-    for (y in 0..129) {  // 129 -  -9
-		for (x in 0..129) {  // 129 - 9    
-			if (!(x == 47 && y == 49)) {   //  47 / 49       4 -6
-				var steps = guard(2,x,y)
+    for (y in 0..height -1) {  
+		for (x in 0..width-1) {     
+            if (yardMap[x + width*y] == '.') {
+				var steps = guard(yardMap, width, height, xPos, yPos, 2, x, y)
 				if (steps == -1) {
                     result2 += 1
                 }
-			}
+            }
 		}
 	}
    println("   ${result2} different positions could be choosen for an obstruction")
