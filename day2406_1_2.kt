@@ -1,8 +1,6 @@
-
 import java.io.File
 
-
-fun guardNew(in1: Int, insertObstacle: Int ): Int {
+fun guardNew(part: Int, insertObstacle: Int ): Int {
 
     var yardMap = ""
     var xPos = 0
@@ -143,8 +141,8 @@ fun guardNew(in1: Int, insertObstacle: Int ): Int {
         }
 
          i += 1
-		if (i > width * height) guardInYard = false
-		if (lastFourTurns.size > 8 && lastFourTurns.takeLast(4) == lastFourTurns.takeLast(8).dropLast(4)) guardInLoop= true
+		if (i > width * height ) guardInLoop = true
+		//if (lastFourTurns.size > 8 && lastFourTurns.takeLast(4) == lastFourTurns.takeLast(8).dropLast(4)) guardInLoop= true  // macht keinen Unterschied. 2013 different Palaces, 2165 Gelegenheiten
         if (guardInLoop) println("----------Loop-------------------")
 		
          if (false) {
@@ -161,11 +159,10 @@ fun guardNew(in1: Int, insertObstacle: Int ): Int {
 
 	//print("lastFourTurns :$lastFourTurns   :")
 	
-
-	
-    if (in1 == 1) {
-        return yardMap.count { it != '.' && it != '#' }  // Achtung, hier wird nicht die Anzahl der Steps zurück gegeben, sondern nur die unterschiedlichen Tiles
-                                                         // -> 5444 ist für Step 2 zu wenig!
+    if (part == 1) {
+        return yardMap.count { it != '.' && it != '#' } 
+    } else if (part == 3) {
+        return i  // für Part 3, berechnet die Anzahl der Schritte, die der Wächter im Lab ist für Teil 2
     } else {
 		if (guardInLoop) {
 			return obstaclePos
@@ -175,25 +172,25 @@ fun guardNew(in1: Int, insertObstacle: Int ): Int {
     }
 }
 
- 
-
 fun main() {
 
     println("--- Day 6: Guard Gallivant ---")
             
 	var result1 = guardNew(1,-1)
 	println("   the guard will visit ${result1} distinct points")
-	
 	println()
 	
+    var nSteps = guardNew(3, -1)
 	var result2 = mutableListOf<Int>()
-	for (i in 0..result1) {      // Achtung, hier wird nicht die Anzahl der Steps zurück gegeben, sondern nur die unterschiedlichen Tiles
+	for (i in 0..nSteps) {      
 		var steps = guardNew(2,i)
 		if (steps != -1) result2.add(steps)
-		println("i: $i, steps: $steps, result = ${result2.size}")	
+		println("i: $i, opstacle Pos: $steps, result = ${result2.size}")	
 	}
-	println((result2.distinct().size))
-	println("   ${result2} different positions could be choosen for an obstruction") //5822/5821/5304 to high 1288/1287 / 1805 / 1721/ 1659 /1288 /211 /3xx /309
-    // Achtung, bereits für das Beispiel werden nur 5 statt 6 Punkte ausgegeben!
-    
+	println((result2.size))
+	println("   ${result2.distinct().size} different positions could be choosen for an obstruction") //5822/5821/5304 to high 1288/1287 / 1805 / 1721/ 1659 /1288 /211 /3xx /309 /2013 / 2165
+    // zwei mögliche Ansätze: a) Alle Positionen durchprobieren
+    //                        b) an jeder Stelle an der er vorbei kommt zum nächsten Schritt ein Hindernis stellen
+    // bei b) hab ich ursprünglich nur die Anzahl der Stellen genommen (ergebnis aus Teil 1), nicht die wirkliche Zahl der Stellen, aber auch das hat nichts geholfen.
+    // manche Stellen sind doppelt im Zählen, aber auch das hiflt nichts.
 }
