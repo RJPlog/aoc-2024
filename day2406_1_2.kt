@@ -1,4 +1,6 @@
+
 import java.io.File
+
 
 fun guardNew(in1: Int, insertObstacle: Int ): Int {
 
@@ -9,8 +11,7 @@ fun guardNew(in1: Int, insertObstacle: Int ): Int {
     var height : Int
     var i = 0
     var direction = "^"
-
-  File("day2406_puzzle_input.txt").forEachLine {
+    File("day2406_puzzle_input.txt").forEachLine {
         width = it.length
         yardMap += it
         if (it.contains("^")) {
@@ -163,7 +164,8 @@ fun guardNew(in1: Int, insertObstacle: Int ): Int {
 
 	
     if (in1 == 1) {
-        return yardMap.count { it != '.' && it != '#' }
+        return yardMap.count { it != '.' && it != '#' }  // Achtung, hier wird nicht die Anzahl der Steps zurück gegeben, sondern nur die unterschiedlichen Tiles
+                                                         // -> 5444 ist für Step 2 zu wenig!
     } else {
 		if (guardInLoop) {
 			return obstaclePos
@@ -173,6 +175,8 @@ fun guardNew(in1: Int, insertObstacle: Int ): Int {
     }
 }
 
+ 
+
 fun main() {
 
     println("--- Day 6: Guard Gallivant ---")
@@ -181,14 +185,15 @@ fun main() {
 	println("   the guard will visit ${result1} distinct points")
 	
 	println()
-	/* 
+	
 	var result2 = mutableListOf<Int>()
-	for (i in 0..5443) {
+	for (i in 0..result1) {      // Achtung, hier wird nicht die Anzahl der Steps zurück gegeben, sondern nur die unterschiedlichen Tiles
 		var steps = guardNew(2,i)
 		if (steps != -1) result2.add(steps)
 		println("i: $i, steps: $steps, result = ${result2.size}")	
 	}
 	println((result2.distinct().size))
 	println("   ${result2} different positions could be choosen for an obstruction") //5822/5821/5304 to high 1288/1287 / 1805 / 1721/ 1659 /1288 /211 /3xx /309
-    */
+    // Achtung, bereits für das Beispiel werden nur 5 statt 6 Punkte ausgegeben!
+    
 }
