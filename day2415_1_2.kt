@@ -1,3 +1,5 @@
+import java.io.File
+
 fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: Int): Long {
 	var warehouse = puzzleInput1
     puzzleInput2.forEach {
@@ -79,45 +81,37 @@ fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: I
 
             }           
         }
-    }
-
-     
+    }     
     return result
 }
 
 fun main() {
+
+    var t1 = System.currentTimeMillis()
    
     println("--- Day 15: Warehouse Woes ---")
     
-    var puzzleInput1 = listOf("##########",
-"#..O..O.O#",
-"#......O.#",
-"#.OO..O.O#",
-"#..O@..O.#",
-"#O#..O...#",
-"#O..O..O.#",
-"#.OO.O.OO#",
-"#....O...#",
-"##########")
-    
-    var puzzleInput2 = listOf("<vv>^<v^>v>^vv^v>v<>v^v<v<^vv<<<^><<><>>v<vvv<>^v^>^<<<><<v<<<v^vv^v>^",
-"vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v",
-"><>vv>v^v^<>><>>>><^^>vv>v<^^^>>v^v^<^^>v^^>v^<^v>v<>>v^v^<v>v^^<^^vv<",
-"<<v<^>>^^^^>>>v^<>vvv^><v<<<>^^^vv^<vvv>^>v<^^^^v<>^>vvvv><>>v^<<^^^^^",
-"^><^><>>><>^^<<^^v>>><^<v>^<vv>>v>>>^v><>^v><<<<v>>v<v<v>vvv>^<><<>^><",
-"^>><>^v<><^vvv<^^<><v<<<<<><^v<<<><<<^^<v<^^^><^>>^<v^><<<^>>^v<v^v<v^",
-">^>>^v>vv>^<<^v<>><<><<v<<v><>v<^vv<<<>^^v^>^^>>><<^v>>v^v><^^>>^<>vv^",
-"<><^^>^^^<><vvvvv^v<v<<>^v<v>v<<^><<><<><<<^^<<<^<<>><<><^^^>^^<>^>v<>",
-"^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>",
-"v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^")
-    
-    var width = puzzleInput1[0].length
-    var height = puzzleInput1.size
-    
- 
-    var solution1 = warehouse(puzzleInput1.joinToString(""), puzzleInput2.joinToString(""), width, height, 1)
+    var puzzleInput1 = ""
+    var puzzleInput2 = ""
+    var width = 0
+    var height = 0
+
+    File("day2415_puzzle_input.txt").forEachLine {
+        if (it.contains('#') || it.contains('.') || it.contains('O')) {
+            puzzleInput1 += it
+            width = it.length
+        } else if (it.contains('^') || it.contains('>') ||it.contains('v') ||it.contains('<')) {
+            puzzleInput2 += it
+        }
+    }
+    height = puzzleInput1.length/width
+     
+    var solution1 = warehouse(puzzleInput1, puzzleInput2, width, height, 1)
 
     println("  part1: the sum of all boxes' GPS coordinates is $solution1")
 
     //println("  part2: ")
+
+    t1 = System.currentTimeMillis() - t1
+	println("puzzle solved in ${t1} ms")
 }
