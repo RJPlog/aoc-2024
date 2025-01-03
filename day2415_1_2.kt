@@ -18,13 +18,17 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
     // new pushing algorithm
 
         // for development purpose
-        println("initial state")
-        warehouse.chunked(w).forEach{
-                println(it)
-            }
-            println()
+     //   println("initial state")
+      //  warehouse.chunked(w).forEach{
+       //         println(it)
+       //     }
+        //    println()
+
     
+        var k = puzzleInput2.length
     puzzleInput2.forEach {
+        k-= 1
+        println(k)
         var x = warehouse.indexOf('@') % w
         var y = warehouse.indexOf('@') / w
         
@@ -68,7 +72,7 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
                             movePos = false
                         }
                     }
-                    println("moveArea: $moveArea, movePos: $movePos")
+                 //   println("moveArea: $moveArea, movePos: $movePos")
                 }
                 // eval finished, now shift
                 moveArea.sort()
@@ -120,7 +124,7 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
                             movePos = false
                         }
                     }
-                    println("moveArea: $moveArea, movePos: $movePos")
+                  //  println("moveArea: $moveArea, movePos: $movePos")
                 }
                 // eval finished, now shift
                 moveArea.sortDescending()
@@ -182,10 +186,10 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
             }
         } 
             // for development purpose
-        warehouse.chunked(w).forEach{
-            println(it)
-        }
-        println()
+     //   warehouse.chunked(w).forEach{
+     //       println(it)
+      //  }
+       // println()
 
     }
 
