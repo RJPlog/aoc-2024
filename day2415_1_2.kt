@@ -1,6 +1,6 @@
 import java.io.File
 
-fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: Int): Long {
+fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long {
     // modifiy warehouse
     var warehouse = ""
     puzzleInput1.chunked(w).forEach{
@@ -32,11 +32,30 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: 
             '^' -> {
                 println("up")
             }
-            '>' -> {
-                println("right")
-            }
             'v' -> {
                 println("down")
+            }
+            '>' -> {
+                println("right")
+                var moveArea = "@"
+                var moveIndex = 1
+                var moveEval = false
+                var movePos = false
+                while (!moveEval){
+                    if (warehouse[(x+moveIndex)+w*y] == '[') {
+                        moveArea = moveArea + "[]"
+                        moveIndex += 2
+                    } else if (warehouse[(x+moveIndex)+w*y] == '.') {
+                        moveEval = true
+                        movePos = true
+                    } else if (warehouse[(x+moveIndex)+w*y] == '#') {
+                        moveEval = true
+                    }
+                }
+                if (movePos) {
+                    warehouse = warehouse.replaceRange((x+1)+w*y, (x+1)+w*y + moveArea.length, moveArea)
+                    warehouse = warehouse.replaceRange(x + w*y, x + w*y + 1, ".")
+                }
             }
             '<' -> {
                 println("left")
@@ -92,7 +111,7 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: 
     return result
 }
 
-fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: Int): Long {
+fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long {
 	var warehouse = puzzleInput1
     puzzleInput2.forEach {
         var x = warehouse.indexOf('@') % w
@@ -110,7 +129,7 @@ fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: I
                     if (matchD != null) {
                     	warehouse = warehouse.replaceRange(x + w*y, x + w*y + 1, ".")
                         warehouse = warehouse.replaceRange(x + w*(y-1), x + w*(y-1) + 1, "@")
-                        warehouse = warehouse.replaceRange(x + w*y - (matchD!!.value.length-1), x + w*y - (matchD!!.value.length-1) + 1, "O")
+                        warehouse = warehouse.replaceRange(x + w*y - (matchD.value.length-1), x + w*y - (matchD.value.length-1) + 1, "O")
                     }
                 }
                 //println("up")
@@ -123,7 +142,7 @@ fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: I
                     val pR = """@O+\.""".toRegex()
                     val match = pR.find(warehouse)
                     if (match != null) {
-                    	warehouse = warehouse.replace(match!!.value, "." + match!!.value.dropLast(1))
+                    	warehouse = warehouse.replace(match.value, "." + match.value.dropLast(1))
                     }
                 }
                 //println("right")
@@ -139,7 +158,7 @@ fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: I
                     if (matchD != null) {
                     	warehouse = warehouse.replaceRange(x + w*y, x + w*y + 1, ".")
                         warehouse = warehouse.replaceRange(x + w*(y+1), x + w*(y+1) + 1, "@")
-                        warehouse = warehouse.replaceRange(x + w*y + matchD!!.value.length-1, x + w*y + matchD!!.value.length-1 + 1, "O")
+                        warehouse = warehouse.replaceRange(x + w*y + matchD.value.length-1, x + w*y + matchD.value.length-1 + 1, "O")
                     }
                 }
                 //println("down")
@@ -153,7 +172,7 @@ fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int, part: I
                     val pR = """\.O+@""".toRegex()
                     val match = pR.find(warehouse)
                     if (match != null) {
-                    	warehouse = warehouse.replace(match!!.value, match!!.value.drop(1) + ".")
+                    	warehouse = warehouse.replace(match.value, match.value.drop(1) + ".")
                     }
                 }
             }
@@ -198,11 +217,11 @@ fun main() {
     }
     height = puzzleInput1.length/width
      
-    var solution1 = warehouse(puzzleInput1, puzzleInput2, width, height, 1)
+    var solution1 = warehouse(puzzleInput1, puzzleInput2, width, height)
 
     println("  part1: the sum of all boxes' GPS coordinates is $solution1")
 
-    var solution2 = warehouse2(puzzleInput1, puzzleInput2, width, height, 2)
+    var solution2 = warehouse2(puzzleInput1, puzzleInput2, width, height)
     println("  part2: the sum of all boxes' GPS coordinates is $solution2")
 
     t1 = System.currentTimeMillis() - t1
