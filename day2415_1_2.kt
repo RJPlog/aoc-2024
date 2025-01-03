@@ -31,6 +31,53 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
         when (it) {     			
             '^' -> {
                 println("up")
+                var moveArea = mutableListOf<Int>()
+                moveArea.add(x+w*y)
+                var loopStart = 0
+                var loopEnd = 0
+                var moveEval = false
+                var movePos = true
+                while (!moveEval) {
+                    moveEval = true
+                    for (j in loopStart..loopEnd) {
+                        var tile = moveArea[j]
+                        var xT = tile % w
+                        var yT = tile / w
+                        if (warehouse[xT+w*(yT-1)] == '[') {
+                            if (!moveArea.contains(xT+w*(yT-1))) {
+                                moveArea.add(xT+w*(yT-1))
+                                loopEnd += 1
+                            }
+                            if (!moveArea.contains((xT-1)+w*(yT-1))) {
+                                moveArea.add((xT+1)+w*(yT-1))
+                                loopEnd += 1
+                            }
+                            loopStart +=1
+                            moveEval = false
+                        }  else if (warehouse[xT+w*(yT-1)] == ']') {
+                            if (!moveArea.contains(xT+w*(yT-1))) {
+                                moveArea.add(xT+w*(yT-1))
+                                loopEnd += 1
+                            }
+                            if (!moveArea.contains((xT-1)+w*(yT-1))) {
+                                moveArea.add((xT-1)+w*(yT-1))
+                                loopEnd += 1}
+                            loopStart += 1
+                            moveEval = false
+                        } else if (warehouse[xT+w*(yT-1)] == '#') {
+                            movePos = false
+                        }
+                    }
+                    println("moveArea: $moveArea, movePos: $movePos")
+                }
+                // eval finished, now shift
+                moveArea.sort()
+                if (movePos) {
+                    moveArea.forEach{
+                        warehouse = warehouse.replaceRange(it-w, it-w + 1, warehouse[it].toString())
+                        warehouse = warehouse.replaceRange(it, it+1, ".")
+                    }
+                }
             }
             'v' -> {
                 println("down")
