@@ -15,26 +15,12 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
     }
     var w = 2*w
 
-    // new pushing algorithm
-
-        // for development purpose
-     //   println("initial state")
-      //  warehouse.chunked(w).forEach{
-       //         println(it)
-       //     }
-        //    println()
-
-    
-        var k = puzzleInput2.length
     puzzleInput2.forEach {
-        k-= 1
-        println(k)
         var x = warehouse.indexOf('@') % w
         var y = warehouse.indexOf('@') / w
         
         when (it) {     			
             '^' -> {
-                println("up")
                 var moveArea = mutableListOf<Int>()
                 moveArea.add(x+w*y)
                 var loopStart = 0
@@ -72,7 +58,6 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
                             movePos = false
                         }
                     }
-                 //   println("moveArea: $moveArea, movePos: $movePos")
                 }
                 // eval finished, now shift
                 moveArea.sort()
@@ -84,9 +69,6 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
                 }
             }
             'v' -> {
-                println("down")
-
-
                 var moveArea = mutableListOf<Int>()
                 moveArea.add(x+w*y)
                 var loopStart = 0
@@ -124,7 +106,6 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
                             movePos = false
                         }
                     }
-                  //  println("moveArea: $moveArea, movePos: $movePos")
                 }
                 // eval finished, now shift
                 moveArea.sortDescending()
@@ -134,14 +115,8 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
                         warehouse = warehouse.replaceRange(it, it+1, ".")
                     }
                 }
-
-
-
-
-
             }
             '>' -> {
-                println("right")
                 var moveArea = "@"
                 var moveIndex = 1
                 var moveEval = false
@@ -163,7 +138,6 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
                 }
             }
             '<' -> {
-                println("left")
                 var moveArea = "@"
                 var moveIndex = 1
                 var moveEval = false
@@ -185,22 +159,8 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
                 }
             }
         } 
-            // for development purpose
-     //   warehouse.chunked(w).forEach{
-     //       println(it)
-      //  }
-       // println()
-
     }
 
-
-    // for development purpose
-    println("final state")
-    warehouse.chunked(w).forEach{
-            println(it)
-        }
-        println()
-        
     // calculating result    
     var result = 0L    
     for (y in 0..h-1) {
@@ -237,7 +197,6 @@ fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long {
                         warehouse = warehouse.replaceRange(x + w*y - (matchD.value.length-1), x + w*y - (matchD.value.length-1) + 1, "O")
                     }
                 }
-                //println("up")
             }
             '>' -> {
                 if (warehouse[(x+1)+ w*(y)] == '.') {
@@ -250,8 +209,7 @@ fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long {
                     	warehouse = warehouse.replace(match.value, "." + match.value.dropLast(1))
                     }
                 }
-                //println("right")
-                }
+            }
             'v' -> {
                 if (warehouse[(x)+ w*(y+1)] == '.') {
                     warehouse = warehouse.replaceRange((x)+ w*(y), (x)+ w*(y)+1, ".")
@@ -266,10 +224,8 @@ fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long {
                         warehouse = warehouse.replaceRange(x + w*y + matchD.value.length-1, x + w*y + matchD.value.length-1 + 1, "O")
                     }
                 }
-                //println("down")
-                }
+            }
             '<' -> {
-                //println("left")
                 if (warehouse[(x-1)+ w*(y)] == '.') {
                     warehouse = warehouse.replaceRange((x)+ w*(y), (x)+ w*(y)+1, ".")
                     warehouse = warehouse.replaceRange((x-1)+ w*(y), (x-1)+ w*(y)+1, "@")
@@ -282,12 +238,7 @@ fun warehouse(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long {
                 }
             }
         } 
-
     }
-    warehouse.chunked(w).forEach{
-            println(it)
-        }
-        println()
         
     var result = 0L    
     for (y in 0..h-1) {
