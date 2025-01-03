@@ -48,7 +48,7 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
                                 moveArea.add(xT+w*(yT-1))
                                 loopEnd += 1
                             }
-                            if (!moveArea.contains((xT-1)+w*(yT-1))) {
+                            if (!moveArea.contains((xT+1)+w*(yT-1))) {
                                 moveArea.add((xT+1)+w*(yT-1))
                                 loopEnd += 1
                             }
@@ -100,7 +100,7 @@ fun warehouse2(puzzleInput1: String, puzzleInput2:String, w: Int, h: Int): Long 
                                 moveArea.add(xT+w*(yT+1))
                                 loopEnd += 1
                             }
-                            if (!moveArea.contains((xT-1)+w*(yT+1))) {
+                            if (!moveArea.contains((xT+1)+w*(yT+1))) {
                                 moveArea.add((xT+1)+w*(yT+1))
                                 loopEnd += 1
                             }
