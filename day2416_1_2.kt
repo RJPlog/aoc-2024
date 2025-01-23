@@ -1,24 +1,19 @@
 import java.io.File
 
-data class PathX(
-    var path: List<Int>,
-    var score: Int,
-    var lastDir: Char
-)
-
-fun maze(puzzleInput: String, w: Int, h: Int, part: Int): Int {
+fun maze(puzzleInput: String, w: Int, h: Int, start: Int, end: Int, dir: Int, part: Int): Pair<Int, Int> {
       
     // initialize all necessary variables for Dijkstra
     var Q = mutableMapOf<Int,List<Int>>()  // id -> dist, previous, direction (N = 0, E = 1, S = 2, W = 3)
     var allNodes = mutableMapOf<Int,List<Int>>()
-    var startIndex = puzzleInput.indexOf("S")
+    var startIndex = start
+
     for (i in 0..puzzleInput.length-1) {
         if (puzzleInput[i] != '#') {
             var node = listOf(w*h*1000, 0, 10 )
             Q.put(i, node)
         }
     }
-    Q.put(startIndex, listOf(0,0,1))
+    Q.put(startIndex, listOf(0,0,dir))
     
     var j = 0
     while (Q.size > 0) {
@@ -87,179 +82,13 @@ fun maze(puzzleInput: String, w: Int, h: Int, part: Int): Int {
         j += 1
     }
     
-    var endIndex = puzzleInput.indexOf("E")
-    
-    return allNodes.getValue(endIndex)[0]
+    var endIndex = end
+
+    return Pair(allNodes.getValue(endIndex)[0], allNodes.getValue(endIndex)[2])
 }
-
-fun maze2(pI: String, w: Int, h: Int, maxScore: Int): Int {
-
-    var puzzleInput = pI
-    var deadEnd = true
-    while (deadEnd) {
-        deadEnd = false
-        for (y in 1..h-2) {
-            for (x in 1..w-2) {
-                if(puzzleInput[x + w*y] == '.') {
-                    var count = 0
-                    if (puzzleInput[(x) + w*(y-1)] == '#') count += 1
-                    if (puzzleInput[(x+1) + w*(y)] == '#') count += 1
-                    if (puzzleInput[(x) + w*(y+1)] == '#') count += 1
-                    if (puzzleInput[(x-1) + w*(y)] == '#') count += 1
-                    if (count >= 3) {
-                        puzzleInput = puzzleInput.replaceRange(x+w*y, x+w*y+1, "#")
-                        deadEnd = true
-                    }
-                    
-                }
-            }
-        }
-    }
-	
-	    var modPuzzleInput = puzzleInput
-    
-        var startIndex = puzzleInput.indexOf("S")
-        var endIndex = puzzleInput.indexOf("E")
-        var allPath = mutableListOf<PathX>()
-        //var path2End = mutableListOf<PathX>()
-        allPath.add(PathX(listOf(startIndex), 0, '>'))
-        
-        var i = 0L
-        var finishedPath = 0L
-        while (!allPath.isEmpty()) {
-            i += 1L
-            //var allPathNew = mutableListOf<PathX>()
-			
-			
-			
-            // allPath.forEach{
-            
-				var path2continue = allPath[allPath.size-1]		// take last element out ouf allPath, with this we want to continue
-				allPath.removeAt(allPath.size-1) 							// remove it from allPath, it will be added with next steps
-				    var path = path2continue.path
-                var pX = path[path2continue.path.size-1] % w
-                var pY = path[path2continue.path.size-1] / w
-                var score = path2continue.score
-                var dir = path2continue.lastDir
-				var newScore = 0
-				var newDir = '.'
-				
-				// create new paths
-				if (puzzleInput[(pX) + w * (pY-1)] != '#' && !path.contains((pX)+w*(pY-1))) {
-                    var newPath = mutableListOf<Int>()
-                    newPath.addAll(path)
-                    newPath.add((pX)+w*(pY-1))
-                    newDir = '^'
-
-                    if (dir == '^') {
-                        newScore = 1
-                    } else if (dir == '>' || dir == '<') {
-                    	newScore = 1001
-                    } else {
-                        newScore = 2001
-                    }
-                    if ((pX) + w * (pY-1) == endIndex && score + newScore <= maxScore) {
-                        //path2End.add(PathX(newPath, score+newScore, newDir))
-						newPath.forEach {
-                        	modPuzzleInput = modPuzzleInput.replaceRange(it, it+1, "O")
-                        }
-						finishedPath += 1L
-                    } else if (score + newScore <= maxScore) {
-                    	allPath.add(PathX(newPath, score+newScore, newDir))
-                    }
-                }
-                if (puzzleInput[(pX+1) + w * (pY)] != '#' && !path.contains((pX+1)+w*(pY))) {
-                    var newPath = mutableListOf<Int>()
-                    newPath.addAll(path)
-                    newPath.add((pX+1)+w*(pY))
-                    newDir = '>'
-
-                    if (dir == '>') {
-                    	newScore = 1
-                    } else if (dir == '^' || dir == 'v') {
-                    	newScore = 1001
-                    } else {
-                        newScore = 2001
-                    }
-                    if ((pX+1) + w * (pY) == endIndex && score + newScore <= maxScore) {
-                        //path2End.add(PathX(newPath, score+newScore, newDir))
-						newPath.forEach {
-                        	modPuzzleInput = modPuzzleInput.replaceRange(it, it+1, "O")
-                        }
-						finishedPath += 1L
-                    } else if (score + newScore <= maxScore) {
-                    	allPath.add(PathX(newPath, score+newScore, newDir))
-                    }
-                }
-                if (puzzleInput[(pX) + w * (pY+1)] != '#' && !path.contains((pX)+w*(pY+1))) {
-                    var newPath = mutableListOf<Int>()
-                    newPath.addAll(path)
-                    newPath.add((pX)+w*(pY+1))
-                    newDir = 'v'
-
-                    if (dir == 'v') {
-                    	newScore = 1
-                    } else if (dir == '>' || dir == '<') {
-                    	newScore = 1001
-                    } else {
-                        newScore = 2001
-                    }
-                    if ((pX) + w * (pY+1) == endIndex && score + newScore <= maxScore) {
-                        //path2End.add(PathX(newPath, score+newScore, newDir))
-						newPath.forEach {
-                        	modPuzzleInput = modPuzzleInput.replaceRange(it, it+1, "O")
-                        }
-						finishedPath += 1L
-                    } else if (score + newScore <= maxScore) {
-                    	allPath.add(PathX(newPath, score+newScore, newDir))
-                    }
-                }
-                if (puzzleInput[(pX-1) + w * (pY)] != '#' && !path.contains((pX-1)+w*(pY))) {
-                    var newPath = mutableListOf<Int>()
-                    newPath.addAll(path)
-                    newPath.add((pX-1)+w*(pY))
-                    newDir = '<'
-
-                    if (dir == '<') {
-                    	newScore = 1
-                    } else if (dir == '^' || dir == 'v') {
-                    	newScore = 1001
-                    } else {
-                        newScore = 2001
-                    }
-                    if ((pX-1) + w * (pY) == endIndex && score + newScore <= maxScore) {
-                        //path2End.add(PathX(newPath, score+newScore, newDir))
-						newPath.forEach {
-                        	modPuzzleInput = modPuzzleInput.replaceRange(it, it+1, "O")
-                        }
-						finishedPath += 1L
-                   } else if (score + newScore <= maxScore) {
-                    	allPath.add(PathX(newPath, score+newScore, newDir))
-                    }
-                }
-            //}   //allPath.forEach
-            // exchange pathes
-            println("$i   -> ${allPath.size}, fin. Pathes: $finishedPath")
-            //allPath.clear()
-            //allPath.addAll(allPathNew)
-        }
-        
-
-    	//path2End.forEach {
-        //    it.path.forEach {
-        //        modPuzzleInput = modPuzzleInput.replaceRange(it, it+1, "O")
-        //    }
-        //}
-        
-        /* modPuzzleInput.chunked(w){
-            println(it)
-        } */
-    
-    return modPuzzleInput.count {it == 'O'}
-}
-
 
 fun main() {
+    var t1 = System.currentTimeMillis()
    
     println("--- Day 16: Reindeer Maze ---")
 	
@@ -268,13 +97,62 @@ fun main() {
 	File("day2416_puzzle_input.txt").forEachLine {
 		puzzleInput.add(it)
 	}
-     
+
+    var pI = puzzleInput.joinToString("")
+
     var width = puzzleInput[0].length
     var height = puzzleInput.size
+     
+    var deadEnd = true
+    while (deadEnd) {
+        deadEnd = false
+        for (y in 1..height-2) {
+            for (x in 1..width-2) {
+                if(pI[x + width*y] == '.') {
+                    var count = 0
+                    if (pI[(x) + width*(y-1)] == '#') count += 1
+                    if (pI[(x+1) + width*(y)] == '#') count += 1
+                    if (pI[(x) + width*(y+1)] == '#') count += 1
+                    if (pI[(x-1) + width*(y)] == '#') count += 1
+                    if (count >= 3) {
+                        pI = pI.replaceRange(x+width*y, x+width*y+1, "#")
+                        deadEnd = true
+                    }
+                    
+                }
+            }
+        }
+    }
+        
+     
+
+    var startIndex = pI.indexOf("S")
+    var endIndex = pI.indexOf("E")
+    var dir = 1
     
-    var solution1 = maze(puzzleInput.joinToString(""), width, height, 1)
-    println("  part1: the lowest score a Reindeer could possibly get is $solution1")
+    var solution1 = maze(pI, width, height, startIndex, endIndex, dir, 1).first
+    println("   part1: the lowest score a Reindeer could possibly get is $solution1")
 	
-	var solution2 = maze2(puzzleInput.joinToString(""), width, height, solution1)
+    var solution2 = 2  // S and E already counted
+
+    val dur = pI.count {it == '.'}
+    var j = 1
+    for (i in 0..pI.length-1) {
+        if (pI[i] == '.') {
+            println("$j out of ${dur}")
+            j += 1
+            val firstPath = maze(pI, width, height, startIndex, i, dir, 2)
+            val firstPathLength = firstPath.first
+            val firstPathDir = firstPath.second
+            val secondPathLength = maze(pI, width, height, i, endIndex, firstPathDir, 2).first
+            if (firstPathLength + secondPathLength == solution1 ) {
+                solution2 += 1
+            }
+        }
+    }
+
     println("   part2: $solution2 tiles are part of at least one of the best paths")
+
+    t1 = System.currentTimeMillis() - t1
+	println("puzzle solved in ${t1} ms")
 }
