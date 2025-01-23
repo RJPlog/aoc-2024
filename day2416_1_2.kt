@@ -6,6 +6,7 @@ fun maze(puzzleInput: String, w: Int, h: Int, start: Int, end: Int, dir: Int, pa
     var Q = mutableMapOf<Int,List<Int>>()  // id -> dist, previous, direction (N = 0, E = 1, S = 2, W = 3)
     var allNodes = mutableMapOf<Int,List<Int>>()
     var startIndex = start
+    var endIndex = end
 
     for (i in 0..puzzleInput.length-1) {
         if (puzzleInput[i] != '#') {
@@ -16,7 +17,7 @@ fun maze(puzzleInput: String, w: Int, h: Int, start: Int, end: Int, dir: Int, pa
     Q.put(startIndex, listOf(0,0,dir))
     
     var j = 0
-    while (Q.size > 0) {
+    while (!allNodes.contains(endIndex) ) {   // ends when destination is reached
         // take node with shortest distance
         var idU = 0
         var distU = w*h*1000
@@ -82,8 +83,6 @@ fun maze(puzzleInput: String, w: Int, h: Int, start: Int, end: Int, dir: Int, pa
         j += 1
     }
     
-    var endIndex = end
-
     return Pair(allNodes.getValue(endIndex)[0], allNodes.getValue(endIndex)[2])
 }
 
@@ -103,6 +102,7 @@ fun main() {
     var width = puzzleInput[0].length
     var height = puzzleInput.size
      
+    // remove dead ends to save run time
     var deadEnd = true
     while (deadEnd) {
         deadEnd = false
@@ -124,7 +124,6 @@ fun main() {
         }
     }
         
-     
 
     var startIndex = pI.indexOf("S")
     var endIndex = pI.indexOf("E")
@@ -144,7 +143,10 @@ fun main() {
             val firstPath = maze(pI, width, height, startIndex, i, dir, 2)
             val firstPathLength = firstPath.first
             val firstPathDir = firstPath.second
-            val secondPathLength = maze(pI, width, height, i, endIndex, firstPathDir, 2).first
+            var secondPathLength = 0
+            if (firstPathLength <= solution1) {
+                secondPathLength = maze(pI, width, height, i, endIndex, firstPathDir, 2).first
+            }
             if (firstPathLength + secondPathLength == solution1 ) {
                 solution2 += 1
             }
