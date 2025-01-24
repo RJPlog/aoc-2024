@@ -50,7 +50,7 @@ fun transN2N(pin: String): List<String> {
 }
 
 
-fun transN2D(pin: String): List<String> {
+fun transN2D(pin: String, start: String = "A"): List<String> {
     var n2d = mutableMapOf<String,List<String>>()
     n2d.put("AA", listOf("A"))
     n2d.put("A0", listOf("<A"))
@@ -85,7 +85,7 @@ fun transN2D(pin: String): List<String> {
     n2d.put("31", listOf("<<A"))
     n2d.put("19", listOf(">>^^A", ">^>^A", ">^^>A", "^^>>A"))
 
-    var startPin = "A"
+    var startPin = start
     var firstSeq = mutableListOf<String>()
     firstSeq.add("")
 
@@ -108,16 +108,20 @@ fun transN2D(pin: String): List<String> {
     return firstSeq
 }
 
-fun keypadCon(pins: List<String>): Int {
+fun keypadCon(pins: List<String>, rep: Int): Int {
     
     var result = 0
     var possibleSequencesNth = mutableListOf<String>()
     var possibleSequencesNplusOneth = mutableListOf<String>()
     
     pins.forEach {
-        possibleSequencesNth.addAll(transN2D(it))
-
-        for (i in 1..2) {
+        var intermediateResult = 0
+        var start = "A"
+        it.forEach{
+        //println(it)
+        possibleSequencesNth.addAll(transN2D(it.toString(), start))
+        start = it.toString()    
+        for (i in 1..rep) {
             possibleSequencesNplusOneth.clear()
             possibleSequencesNth.forEach{
                 possibleSequencesNplusOneth.addAll(transN2N(it))
@@ -129,12 +133,20 @@ fun keypadCon(pins: List<String>): Int {
 
         var minSeq = possibleSequencesNplusOneth[0].length
         possibleSequencesNplusOneth.forEach {
-            if (it.length < minSeq) minSeq = it.length
+            if (it.length < minSeq) {
+            minSeq = it.length
+            }
         }
-        result += minSeq * it.filter {it.isDigit()}.toInt()
+        //println(minSeqVerb)
+        //result += minSeq * it.filter {it.isDigit()}.toInt()
+        intermediateResult += minSeq
         possibleSequencesNth.clear()
         possibleSequencesNplusOneth.clear()
-    }    
+        }
+        //println(result)
+        result += intermediateResult *it.filter {it.isDigit()}.toInt()
+    } 
+
     return result
 }
 
@@ -145,10 +157,10 @@ var t1 = System.currentTimeMillis()
 println("--- Day 21: Keypad Conundrum ---")
     
 var puzzleInput = listOf("029A", "980A", "179A", "456A", "379A")
-    
-  puzzleInput = listOf("803A", "528A", "586A", "341A", "319A")
+    puzzleInput = listOf("803A", "528A", "586A", "341A", "319A")
+
         
-var solution1 = keypadCon(puzzleInput)
+var solution1 = keypadCon(puzzleInput, 2)
 
 println("  part1: the sum of the complexities is $solution1")   
 
