@@ -111,29 +111,29 @@ fun transN2D(pin: String): List<String> {
 fun keypadCon(pins: List<String>): Int {
     
     var result = 0
-    var possibleSequencesFirstTrans = mutableListOf<String>()
-    var possibleSequencesSecondTrans = mutableListOf<String>()
-    var possibleSequencesThirdTrans = mutableListOf<String>()
+    var possibleSequencesNth = mutableListOf<String>()
+    var possibleSequencesNplusOneth = mutableListOf<String>()
     
     pins.forEach {
-        possibleSequencesFirstTrans.addAll(transN2D(it))
-        possibleSequencesFirstTrans.forEach{
-            possibleSequencesSecondTrans.addAll(transN2N(it))
-        }
-        possibleSequencesSecondTrans.forEach {
-            possibleSequencesThirdTrans.addAll(transN2N(it))
-        } 
-        
-        var minSeq = possibleSequencesThirdTrans[0].length
-        possibleSequencesThirdTrans.forEach {
-            if (it.length < minSeq) minSeq = it.length
+        possibleSequencesNth.addAll(transN2D(it))
+
+        for (i in 1..2) {
+            possibleSequencesNplusOneth.clear()
+            possibleSequencesNth.forEach{
+                possibleSequencesNplusOneth.addAll(transN2N(it))
+            }
+            possibleSequencesNth.clear()
+            possibleSequencesNth.addAll(possibleSequencesNplusOneth)
+            //println("$i th run: ${possibleSequencesNth.size}")
         }
 
+        var minSeq = possibleSequencesNplusOneth[0].length
+        possibleSequencesNplusOneth.forEach {
+            if (it.length < minSeq) minSeq = it.length
+        }
         result += minSeq * it.filter {it.isDigit()}.toInt()
-        
-        possibleSequencesFirstTrans.clear()
-        possibleSequencesSecondTrans.clear()
-        possibleSequencesThirdTrans.clear()
+        possibleSequencesNth.clear()
+        possibleSequencesNplusOneth.clear()
     }    
     return result
 }
@@ -146,14 +146,14 @@ println("--- Day 21: Keypad Conundrum ---")
     
 var puzzleInput = listOf("029A", "980A", "179A", "456A", "379A")
     
-//  puzzleInput = listOf("XXXX", "XXXX", "XXXX", "XXXX", "XXXX")
+  puzzleInput = listOf("803A", "528A", "586A", "341A", "319A")
         
 var solution1 = keypadCon(puzzleInput)
 
 println("  part1: the sum of the complexities is $solution1")   
 
 //    var solution2 = maze(puzzleInput.joinToString(""), width, height, 2)
-//    println("   part2: $solution2 tiles are part of at least one of the best paths")
+//    println("   part2: the sum of the complexities is $solution2")
     
 t1 = System.currentTimeMillis() - t1
 println("puzzle solved in ${t1} ms")
